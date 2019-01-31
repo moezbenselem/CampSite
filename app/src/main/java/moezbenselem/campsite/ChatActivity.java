@@ -148,6 +148,8 @@ public class ChatActivity extends AppCompatActivity {
 
             recyclerMessages = (RecyclerView) findViewById(R.id.recycler_messages);
             linearLayoutManager = new LinearLayoutManager(this);
+
+            linearLayoutManager.setStackFromEnd(true);
             recyclerMessages.setLayoutManager(linearLayoutManager);
 
             rootRef = FirebaseDatabase.getInstance().getReference();

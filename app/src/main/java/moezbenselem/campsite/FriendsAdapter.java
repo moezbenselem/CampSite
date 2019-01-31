@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -50,7 +52,66 @@ public class FriendsAdapter  extends RecyclerView.Adapter<FriendsAdapter.usersVi
 
             holder.tvName.setText(user.getUsername());
 
-            Picasso.with(context).load(user.getImage()).placeholder(R.drawable.male_user).into(holder.imageView);
+
+            if(user.getGender().equalsIgnoreCase("male"))
+            {
+                Picasso.with(context).load(user.getImage()).networkPolicy(NetworkPolicy.OFFLINE)
+                        .placeholder(R.drawable.male_user).into(holder.imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+
+                        Picasso.with(context).load(user.getImage())
+                                .placeholder(R.drawable.male_user).into(holder.imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                            }
+                        });
+
+                    }
+                });
+
+            }
+            else{
+                Picasso.with(context).load(user.getImage()).networkPolicy(NetworkPolicy.OFFLINE)
+                        .placeholder(R.drawable.female_user).into(holder.imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+
+                        Picasso.with(context).load(user.getImage())
+                                .placeholder(R.drawable.female_user).into(holder.imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+
+
+                            }
+                        });
+
+                    }
+                });
+
+            }
+
+
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override

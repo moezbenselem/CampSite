@@ -73,7 +73,8 @@ try {
     @Override
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v = null;
+        View v = v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.message_layout2, parent, false);
 
         try {
 

@@ -3,6 +3,7 @@ package moezbenselem.campsite;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,8 +15,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -200,5 +215,102 @@ public class MainActivity extends AppCompatActivity {
         startActivity(toStart);
         finish();
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }else
+            {
+                resultUri = result.getUri();
+                ProfileFragment.imageView.setImageURI(resultUri);
+
+                uploadImage(mAuth.getCurrentUser().getDisplayName());
+
+            }
+        }
+
+    }
+
+    StorageReference mStorageRef;
+    DatabaseReference mDatabase;
+    Uri resultUri = null;
+
+    public void uploadImage(final String nom){
+
+        try {
+
+            mStorageRef = FirebaseStorage.getInstance().getReference();
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());
+
+            final StorageReference filePath = mStorageRef.child("users").child(nom + ".jpg");
+
+            filePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+
+                    System.out.println("Upload success !");
+
+                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(final Uri uri) {
+                            // Got the download URL for 'users/me/profile.png'
+
+                            System.out.println("Uri == "+uri);
+                            Map updateHashMap = new HashMap();
+                            updateHashMap.put("image", uri.toString());
+                            updateHashMap.put("thumb_image", uri.toString());
+                            mDatabase.updateChildren(updateHashMap).addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+                                    if(!task.isSuccessful()){
+
+                                        task.getException().printStackTrace();
+
+                                    }
+                                    else {
+                                        System.out.println("Update success !");
+                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                .setPhotoUri(uri)
+                                                .build();
+
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+
+
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+
+                            exception.printStackTrace();
+                        }
+                    });
+
+                }
+
+            });
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+
 
 }

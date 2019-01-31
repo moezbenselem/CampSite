@@ -11,8 +11,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/item_image"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:src="@drawable/male_user" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/item_image"
         android:text="display name"
-        android:textSize="24sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/item_status"
@@ -35,7 +35,7 @@
         android:layout_toEndOf="@+id/item_image"
 
         android:text="this is the status text"
-        android:textSize="16sp" />
+        android:textSize="12sp" />
 
     <ImageView
         android:id="@+id/online_icon"
