@@ -1,0 +1,81 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4A4A4A"
+    tools:context="moezbenselem.campsite.ProfileFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rl_layout_user"
+>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/male_user"
+
+            android:id="@+id/circleImageView" />
+
+        <TextView
+            android:id="@+id/display_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="display name"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/circleImageView"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="hi there im using the fire chat app"
+            android:layout_below="@+id/display_name"
+            android:layout_centerHorizontal="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:weightSum="4"
+            >
+            <Button
+                android:id="@+id/btStatus"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_weight="2"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bt_blue"
+                android:text="change status"
+
+                />
+
+            <Button
+                android:id="@+id/btImage"
+                android:layout_weight="2"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:background="@drawable/bt_vert"
+                android:text="change image"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/btStatus"
+                />
+
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+</FrameLayout>

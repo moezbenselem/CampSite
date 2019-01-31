@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_events"
+        android:icon="@drawable/event"
+        android:title="Events" />
+
+    <item
+        android:id="@+id/navigation_group"
+        android:icon="@drawable/team"
+        android:title="Team" />
+
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/user"
+        android:title="Profile" />
+
+    <item
+        android:id="@+id/navigation_notif"
+        android:icon="@drawable/notif"
+        android:title="Notifications" />
+
+    <item
+        android:id="@+id/navigation_messages"
+        android:icon="@drawable/chat"
+        android:title="Messages" />
+
+</menu>
