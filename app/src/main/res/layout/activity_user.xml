@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
+
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/refresh_layout_user"
+    android:background="#4A4A4A"
+    tools:context="moezbenselem.campsite.UserActivity">
+
+<RelativeLayout
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:background="#4A4A4A"
-tools:context="moezbenselem.campsite.UserActivity">
+>
+
+
+
+
 
 
 <ImageView
@@ -71,4 +83,8 @@ tools:context="moezbenselem.campsite.UserActivity">
     android:text="Total friends" />
 
 
+
+
 </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

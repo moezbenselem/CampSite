@@ -35,9 +35,14 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
 
+    static BottomNavigationView navigation;
+
     FirebaseAuth mAuth;
     private TextView mTextMessage;
     FragmentManager fragmentManager = getSupportFragmentManager();
+
+    public static MenuItem notif_nav , message_nav,groupe_nav ;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -110,9 +115,11 @@ public class MainActivity extends AppCompatActivity {
 
         //mTextMessage = (TextView) findViewById(R.id.message);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_profile);
+
+
 
         mAuth = FirebaseAuth.getInstance();
 
