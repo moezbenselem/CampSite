@@ -12,6 +12,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -146,6 +147,7 @@ public class RechercheFragment extends Fragment {
         View mView;
         TextView tvName, tvStatus;
         CircleImageView imageView;
+        ImageView onlineIcon;
 
         public usersViewHolder(View itemView) {
             super(itemView);
@@ -153,6 +155,7 @@ public class RechercheFragment extends Fragment {
             tvName = (TextView) itemView.findViewById(R.id.item_display_name);
             tvStatus = (TextView) itemView.findViewById(R.id.item_status);
             imageView = (CircleImageView) itemView.findViewById(R.id.item_image);
+            onlineIcon = itemView.findViewById(R.id.online_icon);
 
         }
 

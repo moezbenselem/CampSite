@@ -2,12 +2,21 @@ package moezbenselem.campsite;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -42,6 +51,7 @@ public class FriendsAdapter  extends RecyclerView.Adapter<FriendsAdapter.usersVi
     }
 
 
+    DatabaseReference userRef;
 
     @Override
     public void onBindViewHolder(final FriendsAdapter.usersViewHolder holder, int position) {
@@ -51,6 +61,32 @@ public class FriendsAdapter  extends RecyclerView.Adapter<FriendsAdapter.usersVi
             final User user = listUsers.get(position);
 
             holder.tvName.setText(user.getUsername());
+
+            userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUsername());
+
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.hasChild("online"))
+                    {
+                        String online = dataSnapshot.child("online").getValue().toString();
+                        if(online.equalsIgnoreCase("true")){
+
+                            holder.onlineIcon.setVisibility(View.VISIBLE);
+
+                        }else
+                            holder.onlineIcon.setVisibility(View.INVISIBLE);
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
 
             if(user.getGender().equalsIgnoreCase("male"))
@@ -111,8 +147,6 @@ public class FriendsAdapter  extends RecyclerView.Adapter<FriendsAdapter.usersVi
 
             }
 
-
-
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -143,6 +177,7 @@ public class FriendsAdapter  extends RecyclerView.Adapter<FriendsAdapter.usersVi
         View mView;
         TextView tvName;
         CircleImageView imageView;
+        ImageView onlineIcon;
 
         public usersViewHolder(View itemView){
 
@@ -150,8 +185,9 @@ public class FriendsAdapter  extends RecyclerView.Adapter<FriendsAdapter.usersVi
             try {
 
                 mView = itemView;
-                tvName = (TextView)itemView.findViewById(R.id.item_display_name);
-                imageView = (CircleImageView) itemView.findViewById(R.id.item_image);
+                tvName = itemView.findViewById(R.id.item_display_name);
+                imageView = itemView.findViewById(R.id.item_image);
+                onlineIcon = itemView.findViewById(R.id.online_icon);
 
             }catch (Exception e){
                 e.printStackTrace();

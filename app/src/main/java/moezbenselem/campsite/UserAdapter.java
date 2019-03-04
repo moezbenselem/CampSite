@@ -2,15 +2,21 @@ package moezbenselem.campsite;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,6 +32,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.usersViewHolde
 
     public ArrayList<User> listUsers;
     Context context;
+    DatabaseReference userRef;
 
     public UserAdapter(ArrayList<User> listUsers,Context context) {
         this.listUsers = listUsers;
@@ -53,6 +60,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.usersViewHolde
 
             holder.tvName.setText(user.getUsername());
             holder.tvStatus.setText(user.getStatus());
+
+            userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUsername());
+
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.hasChild("online"))
+                    {
+                        String online = dataSnapshot.child("online").getValue().toString();
+                        if(online.equalsIgnoreCase("true")){
+
+                            holder.onlineIcon.setVisibility(View.VISIBLE);
+
+                        }else
+                            holder.onlineIcon.setVisibility(View.INVISIBLE);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
 
             Picasso.with(context).load(user.getImage()).placeholder(R.drawable.male_user).into(holder.imageView);
 
@@ -86,7 +119,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.usersViewHolde
         View mView;
         TextView tvName,tvStatus;
         CircleImageView imageView;
-
+        ImageView onlineIcon;
         public usersViewHolder(View itemView){
 
             super(itemView);
@@ -96,6 +129,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.usersViewHolde
                 tvName = (TextView)itemView.findViewById(R.id.item_display_name);
                 tvStatus = (TextView)itemView.findViewById(R.id.item_status);
                 imageView = (CircleImageView) itemView.findViewById(R.id.item_image);
+                onlineIcon = itemView.findViewById(R.id.online_icon);
 
             }catch (Exception e){
                 e.printStackTrace();

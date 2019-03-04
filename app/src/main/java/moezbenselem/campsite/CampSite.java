@@ -13,6 +13,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 /**
  * Created by Moez on 30/01/2019.
  */
@@ -26,15 +28,30 @@ public class CampSite extends Application {
     public void onCreate() {
         super.onCreate();
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
-        Picasso.Builder builder = new Picasso.Builder(this);
-        builder.downloader(new OkHttpDownloader(this,Integer.MAX_VALUE));
-        Picasso built = builder.build();
-        built.setIndicatorsEnabled(true);
-        built.setLoggingEnabled(true);
-        Picasso.setSingletonInstance(built);
+        try {
 
 
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+            Picasso.Builder builder = new Picasso.Builder(this);
+            builder.downloader(new OkHttpDownloader(this, Integer.MAX_VALUE));
+            Picasso built = builder.build();
+            built.setIndicatorsEnabled(true);
+            built.setLoggingEnabled(true);
+            Picasso.setSingletonInstance(built);
+
+            mAuth = MainActivity.mAuth;
+            if(mAuth !=null)
+                if (mAuth.getCurrentUser() != null) {
+
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getDisplayName());
+                    userDatabase.child("online").onDisconnect().setValue(ServerValue.TIMESTAMP);
+
+                }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

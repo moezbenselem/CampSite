@@ -28,7 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Moez on 04/08/2018.
  */
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     public ArrayList<Message> listMessages;
 
@@ -37,9 +37,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     FirebaseUser mCurrentUser;
     public static int INCOMING = 1;
     public static int OUTGOING = 0;
-    DatabaseReference databaseReference,mDatabaseUser;
+    DatabaseReference databaseReference, mDatabaseUser;
 
-    public MessageAdapter(ArrayList<Message> listMessages,Context context) {
+    public MessageAdapter(ArrayList<Message> listMessages, Context context) {
         this.listMessages = listMessages;
         this.context = context;
     }
@@ -53,20 +53,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         //String last = mDatabaseUser.toString().substring(mDatabaseUser.toString().lastIndexOf('/') + 1);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child("name");
 
-try {
+        try {
 
 
-    Message m = listMessages.get(position);
+            Message m = listMessages.get(position);
 
 
-    if (m.getFrom().equals(mCurrentUser.getDisplayName().toString())) {
-        return MessageAdapter.OUTGOING;
+            if (m.getFrom().equals(mCurrentUser.getDisplayName().toString())) {
+                return MessageAdapter.OUTGOING;
 
-    }
-    if (m.getFrom() != (mCurrentUser.getDisplayName().toString())) {
-        return MessageAdapter.INCOMING;
-    }
-}catch (Exception e){e.printStackTrace();}
+            }
+            if (m.getFrom() != (mCurrentUser.getDisplayName().toString())) {
+                return MessageAdapter.INCOMING;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
@@ -84,8 +86,6 @@ try {
             databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(sender);
 
 
-
-
             if (viewType == MessageAdapter.OUTGOING) {
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.message_layout2, parent, false);
@@ -96,12 +96,11 @@ try {
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.message_layout, parent, false);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new MessageViewHolder(v);
     }
-
 
 
     @Override
@@ -115,7 +114,6 @@ try {
             Message m = listMessages.get(position);
 
 
-
             SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String time = sfd.format(new Date(listMessages.get(position).getTime()));
 
@@ -125,13 +123,12 @@ try {
                 @Override
                 public void onClick(View v) {
 
-                    if(holder.messageImage.getTag().equals("default")){
+                    if (holder.messageImage.getTag().equals("default")) {
 
                         holder.tvTime.setVisibility(View.VISIBLE);
                         holder.messageImage.setTag("clicked");
 
-                    }else
-                    {
+                    } else {
                         holder.tvTime.setVisibility(View.GONE);
                         holder.messageImage.setTag("default");
                     }
@@ -145,13 +142,12 @@ try {
                 @Override
                 public void onClick(View v) {
 
-                    if(holder.text.getTag().equals("default")){
+                    if (holder.text.getTag().equals("default")) {
 
                         holder.tvTime.setVisibility(View.VISIBLE);
                         holder.text.setTag("clicked");
 
-                    }else
-                    {
+                    } else {
                         holder.tvTime.setVisibility(View.GONE);
                         holder.text.setTag("default");
                     }
@@ -162,15 +158,14 @@ try {
             String from = m.getFrom();
             String type = m.getType();
 
-            if (type.equals("text"))
-            {
+            if (type.equals("text")) {
 
                 holder.messageImage.setVisibility(View.GONE);
                 holder.text.setText(m.getMessage());
                 holder.text.setVisibility(View.VISIBLE);
 
 
-            }else if (type.equals("image")){
+            } else if (type.equals("image")) {
 
 
                 Picasso.with(context).load(m.getMessage()).placeholder(R.drawable.loading).into(holder.messageImage);
@@ -182,7 +177,7 @@ try {
             }
 
             final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-            if(from.equals(mCurrentUser.getDisplayName())){
+            if (from.equals(mCurrentUser.getDisplayName())) {
 
                 holder.text.setBackgroundResource(R.drawable.message_background2);
 
@@ -202,7 +197,7 @@ try {
                     }
                 });
 
-            }else {
+            } else {
 
                 holder.text.setBackgroundResource(R.drawable.message_background);
                 usersRef.child(from).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -225,8 +220,7 @@ try {
             }
 
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -240,19 +234,19 @@ try {
     public class MessageViewHolder extends RecyclerView.ViewHolder {
 
 
-        public TextView text,tvTime;
+        public TextView text, tvTime;
         CircleImageView userImage;
         ImageView messageImage;
 
 
-        public MessageViewHolder(View itemView){
+        public MessageViewHolder(View itemView) {
 
             super(itemView);
             try {
-                this.text = (TextView) itemView.findViewById(R.id.message_message_text);
-                this.tvTime = (TextView) itemView.findViewById(R.id.message_time);
-                this.userImage = (CircleImageView) itemView.findViewById(R.id.message_user_image);
-                this.messageImage = (ImageView) itemView.findViewById(R.id.message_image);
+                this.text = itemView.findViewById(R.id.message_message_text);
+                this.tvTime = itemView.findViewById(R.id.message_time);
+                this.userImage = itemView.findViewById(R.id.message_user_image);
+                this.messageImage = itemView.findViewById(R.id.message_image);
 
             /*itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -265,7 +259,7 @@ try {
                 }
             });
 */
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -32,16 +34,16 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class MainActivity extends AppCompatActivity {
 
 
     static BottomNavigationView navigation;
 
-    FirebaseAuth mAuth;
-    private TextView mTextMessage;
+    public static FirebaseAuth mAuth;
     FragmentManager fragmentManager = getSupportFragmentManager();
-
-    public static MenuItem notif_nav , message_nav,groupe_nav ;
+    DatabaseReference userRef;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -108,20 +110,23 @@ public class MainActivity extends AppCompatActivity {
 
     public static SearchView searchView;
 
+    public static Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //mTextMessage = (TextView) findViewById(R.id.message);
 
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        context = getApplicationContext();
+        navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_profile);
 
 
-
         mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null)
+            userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());
 
         try {
             fragmentManager.beginTransaction().replace(R.id.content, ProfileFragment.class.newInstance())
@@ -136,13 +141,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        userRef.child("online").setValue(true);
+        userRef.child("device_token").setValue(FirebaseInstanceId.getInstance().getToken());
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        myActionMenuItem = menu.findItem( R.id.action_search);
+        myActionMenuItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) myActionMenuItem.getActionView();
 
         searchView.setOnSearchClickListener(new View.OnClickListener() {
@@ -179,12 +193,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // Toast like print
                 //UserFeedback.show( "SearchOnQueryTextSubmit: " + query);
-                if( ! searchView.isIconified()) {
+                if (!searchView.isIconified()) {
                     searchView.setIconified(true);
                 }
                 myActionMenuItem.collapseActionView();
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
@@ -200,27 +215,51 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        try {
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.action_logout) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    userRef.child("device_token").setValue("null");
+                    userRef.child("online").setValue(ServerValue.TIMESTAMP);
 
-            FirebaseUser user = mAuth.getCurrentUser();
-            if(user!=null)
-            {
-                mAuth.signOut();
-                toStart();
+                    toStart();
+                }
+
+
+                return true;
             }
 
-            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     public void toStart() {
-        Intent toStart = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(toStart);
-        finish();
+        try {
+            Intent toStart = new Intent(MainActivity.this, LoginActivity.class);
+            mAuth.signOut();
+            startActivity(toStart);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        userRef.child("online").setValue(ServerValue.TIMESTAMP);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        userRef.child("online").setValue(ServerValue.TIMESTAMP);
+        super.onDestroy();
+
     }
 
 
@@ -232,8 +271,7 @@ public class MainActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-            }else
-            {
+            } else {
                 resultUri = result.getUri();
                 ProfileFragment.imageView.setImageURI(resultUri);
 
@@ -244,11 +282,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     StorageReference mStorageRef;
     DatabaseReference mDatabase;
     Uri resultUri = null;
 
-    public void uploadImage(final String nom){
+    public void uploadImage(final String nom) {
 
         try {
 
@@ -268,19 +307,18 @@ public class MainActivity extends AppCompatActivity {
                         public void onSuccess(final Uri uri) {
                             // Got the download URL for 'users/me/profile.png'
 
-                            System.out.println("Uri == "+uri);
+                            System.out.println("Uri == " + uri);
                             Map updateHashMap = new HashMap();
                             updateHashMap.put("image", uri.toString());
                             updateHashMap.put("thumb_image", uri.toString());
                             mDatabase.updateChildren(updateHashMap).addOnCompleteListener(new OnCompleteListener() {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
-                                    if(!task.isSuccessful()){
+                                    if (!task.isSuccessful()) {
 
                                         task.getException().printStackTrace();
 
-                                    }
-                                    else {
+                                    } else {
                                         System.out.println("Update success !");
                                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                                 .setPhotoUri(uri)
@@ -311,13 +349,11 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-
-
 
 
 }

@@ -1,6 +1,7 @@
 package moezbenselem.campsite;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -35,20 +37,21 @@ public class UserActivity extends AppCompatActivity {
 
     int holderResource;
     TextView tvDisplay, tvStatus, tvFriends;
-    Button btRequest,btDecline;
+    Button btRequest, btDecline;
     ImageView imageView;
-    String friends_state ="not_friend";
+    String friends_state = "not_friend";
     DatabaseReference friendsDatabaseRef;
     DatabaseReference userDatabaseRef;
     DatabaseReference requestDatabaseRef;
     DatabaseReference notifDatabaseRef;
-    String status , image,gender;
+    String status, image, gender;
     FirebaseUser currentUser;
-    ProgressDialog progressDialog ;
+    ProgressDialog progressDialog;
     FirebaseAuth mAuth;
     String name;
-
+    DatabaseReference userRef;
     SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +60,13 @@ public class UserActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        try{
+        try {
+
+
+            userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());
+            userRef.child("online").setValue(true);
+            userRef.child("device_token").setValue(FirebaseInstanceId.getInstance().getToken());
+
 
             swipeRefreshLayout = findViewById(R.id.refresh_layout_user);
 
@@ -69,20 +78,23 @@ public class UserActivity extends AppCompatActivity {
 
 
             name = getIntent().getExtras().getString("name");
-            System.out.println("intent extra name : "+name);
+            if (name == null) {
+                name = FirebaseMessagingService.theSender;
+
+            }
+
+            System.out.println("intent extra name : " + name);
             getSupportActionBar().setTitle("Profile : " + name);
 
 
-            tvDisplay = (TextView) findViewById(R.id.profile_tvName);
-            tvStatus = (TextView) findViewById(R.id.profile_tvStatus);
-            tvFriends = (TextView) findViewById(R.id.profile_tvFriends);
-            btRequest = (Button) findViewById(R.id.profile_btRequest);
-            btDecline = (Button) findViewById(R.id.profile_btDecline);
+            tvDisplay = findViewById(R.id.profile_tvName);
+            tvStatus = findViewById(R.id.profile_tvStatus);
+            tvFriends = findViewById(R.id.profile_tvFriends);
+            btRequest = findViewById(R.id.profile_btRequest);
+            btDecline = findViewById(R.id.profile_btDecline);
             btDecline.setVisibility(View.INVISIBLE);
-            imageView = (ImageView) findViewById(R.id.profile_imageView);
+            imageView = findViewById(R.id.profile_imageView);
 
-            //status = getIntent().getExtras().getString("status");
-            //image = getIntent().getExtras().getString("image");
 
             userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users").child(name);
             friendsDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Friends");
@@ -102,10 +114,7 @@ public class UserActivity extends AppCompatActivity {
             });
 
 
-
-
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -120,47 +129,45 @@ public class UserActivity extends AppCompatActivity {
     }
 
 
-    public void fetchData(){
+    public void fetchData() {
 
         requestDatabaseRef.child(currentUser.getDisplayName()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                if(dataSnapshot.hasChild(name)){
+                if (dataSnapshot.hasChild(name)) {
                     progressDialog.show();
                     String req_type = dataSnapshot.child(name).child("request_type").getValue().toString();
 
-                    if(req_type.equals("recieved")){
+                    if (req_type.equals("recieved")) {
 
                         System.out.println("you have recieved a friend request !");
                         friends_state = "req_recieved";
                         btRequest.setText("ACCEPT REQUEST");
                         btDecline.setVisibility(View.VISIBLE);
                         progressDialog.dismiss();
-                    }else if(req_type.equals("sent")){
+                    } else if (req_type.equals("sent")) {
                         System.out.println("you have sent a friend request !");
                         friends_state = "req_sent";
                         btRequest.setText("Cancel REQUEST");
                         progressDialog.dismiss();
                     }
 
-                }
-                else{
+                } else {
 
                     friendsDatabaseRef.child(currentUser.getDisplayName()).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             progressDialog.show();
-                            if (dataSnapshot.hasChild(name)){
+                            if (dataSnapshot.hasChild(name)) {
 
                                 btRequest.setEnabled(true);
-                                friends_state ="friends";
+                                friends_state = "friends";
                                 System.out.println("this is a friend!");
                                 btDecline.setVisibility(View.INVISIBLE);
-                                btRequest.setText("Unfriend "+name);
+                                btRequest.setText("Unfriend " + name);
                                 progressDialog.dismiss();
-                            }
-                            else
+                            } else
                                 progressDialog.dismiss();
 
                         }
@@ -229,7 +236,6 @@ public class UserActivity extends AppCompatActivity {
         });
 
 
-
         userDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -264,25 +270,25 @@ public class UserActivity extends AppCompatActivity {
                             Picasso.with(UserActivity.this).load(image).placeholder(holderResource).into(imageView);
                     }
                 });
-                System.out.println("status == "+status);
-                System.out.println("image == "+image);
+                System.out.println("status == " + status);
+                System.out.println("image == " + image);
                 requestDatabaseRef.child(currentUser.getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if(dataSnapshot.hasChild(name)){
+                        if (dataSnapshot.hasChild(name)) {
                             progressDialog.show();
                             String req_type = dataSnapshot.child(name).child("request_type").getValue().toString();
 
-                            if(req_type.equals("recieved")){
+                            if (req_type.equals("recieved")) {
 
                                 System.out.println("you have recieved a friend request !");
                                 friends_state = "req_recieved";
                                 btRequest.setText("ACCEPT REQUEST");
                                 btDecline.setVisibility(View.VISIBLE);
                                 progressDialog.dismiss();
-                            }else if(req_type.equals("sent")){
+                            } else if (req_type.equals("sent")) {
                                 System.out.println("you have sent a friend request !");
                                 friends_state = "req_sent";
                                 btRequest.setText("Cancel REQUEST");
@@ -290,23 +296,21 @@ public class UserActivity extends AppCompatActivity {
                             }
 
 
-
-                        }else{
+                        } else {
 
                             friendsDatabaseRef.child(currentUser.getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     progressDialog.show();
-                                    if (dataSnapshot.hasChild(name)){
+                                    if (dataSnapshot.hasChild(name)) {
 
                                         btRequest.setEnabled(true);
-                                        friends_state ="friends";
+                                        friends_state = "friends";
                                         System.out.println("this is a friend!");
                                         btDecline.setVisibility(View.INVISIBLE);
-                                        btRequest.setText("Unfriend "+name);
+                                        btRequest.setText("Unfriend " + name);
                                         progressDialog.dismiss();
-                                    }
-                                    else
+                                    } else
                                         progressDialog.dismiss();
 
                                 }
@@ -325,7 +329,6 @@ public class UserActivity extends AppCompatActivity {
                     public void onCancelled(DatabaseError databaseError) {
 
 
-
                     }
                 });
 
@@ -340,12 +343,11 @@ public class UserActivity extends AppCompatActivity {
         });
 
 
-
         btDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(friends_state.equalsIgnoreCase("req_recieved")){
+                if (friends_state.equalsIgnoreCase("req_recieved")) {
 
                     final String currentDate = getDateTime();
 
@@ -359,7 +361,7 @@ public class UserActivity extends AppCompatActivity {
                                     .setAction("Action", null).show();
                             btRequest.setEnabled(true);
                             btRequest.setText("Send Request");
-                            friends_state ="not_friend";
+                            friends_state = "not_friend";
                             btDecline.setVisibility(View.INVISIBLE);
                         }
                     });
@@ -374,7 +376,7 @@ public class UserActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 btRequest.setEnabled(false);
-                if(friends_state.equalsIgnoreCase("not_friend")){
+                if (friends_state.equalsIgnoreCase("not_friend")) {
 
                     requestDatabaseRef.child(currentUser.getDisplayName()).child(name).child("request_type").setValue("sent")
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -391,12 +393,12 @@ public class UserActivity extends AppCompatActivity {
 
                                                     final String currentDate = getDateTime();
                                                     btRequest.setEnabled(true);
-                                                    friends_state ="req_sent";
+                                                    friends_state = "req_sent";
                                                     btRequest.setText("Cancel Request");
 
-                                                    HashMap<String,String> notifData = new HashMap<String, String>();
-                                                    notifData.put("from",currentUser.getDisplayName());
-                                                    notifData.put("type","request");
+                                                    HashMap<String, String> notifData = new HashMap<String, String>();
+                                                    notifData.put("from", currentUser.getDisplayName());
+                                                    notifData.put("type", "request");
                                                     notifData.put("time", currentDate);
                                                     notifDatabaseRef.child(name).push().setValue(notifData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
@@ -412,7 +414,7 @@ public class UserActivity extends AppCompatActivity {
                             });
                 }
 
-                if(friends_state.equalsIgnoreCase("req_sent")){
+                if (friends_state.equalsIgnoreCase("req_sent")) {
 
 
                     requestDatabaseRef.child(currentUser.getDisplayName()).child(name).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -423,7 +425,7 @@ public class UserActivity extends AppCompatActivity {
                             Snackbar.make(btRequest, "Friend Request Cancelled !", Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                             btRequest.setEnabled(true);
-                            friends_state ="not_friend";
+                            friends_state = "not_friend";
                             btRequest.setText("SEND REQUEST");
                         }
                     });
@@ -431,7 +433,7 @@ public class UserActivity extends AppCompatActivity {
 
                 }
 
-                if(friends_state.equalsIgnoreCase("friends")){
+                if (friends_state.equalsIgnoreCase("friends")) {
 
 
                     friendsDatabaseRef.child(currentUser.getDisplayName()).child(name).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -439,10 +441,10 @@ public class UserActivity extends AppCompatActivity {
                         public void onSuccess(Void aVoid) {
 
                             friendsDatabaseRef.child(name).child(currentUser.getDisplayName()).removeValue();
-                            Snackbar.make(btRequest, name+" UNFRIENDED !", Snackbar.LENGTH_LONG)
+                            Snackbar.make(btRequest, name + " UNFRIENDED !", Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                             btRequest.setEnabled(true);
-                            friends_state ="not_friend";
+                            friends_state = "not_friend";
                             btRequest.setText("SEND REQUEST");
                         }
                     });
@@ -450,7 +452,7 @@ public class UserActivity extends AppCompatActivity {
 
                 }
 
-                if(friends_state.equalsIgnoreCase("req_recieved")){
+                if (friends_state.equalsIgnoreCase("req_recieved")) {
 
                     final String currentDate = getDateTime();
                     friendsDatabaseRef.child(currentUser.getDisplayName()).child(name).child("date").setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -469,8 +471,8 @@ public class UserActivity extends AppCompatActivity {
                                             Snackbar.make(btRequest, "Friend Request Accepted !", Snackbar.LENGTH_LONG)
                                                     .setAction("Action", null).show();
                                             btRequest.setEnabled(true);
-                                            friends_state ="friends";
-                                            btRequest.setText("Unfriend "+name);
+                                            friends_state = "friends";
+                                            btRequest.setText("Unfriend " + name);
 
                                         }
                                     });
@@ -486,9 +488,23 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        if(swipeRefreshLayout.isRefreshing())
+        if (swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
 
     }
+
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mAuth = FirebaseAuth.getInstance();
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());
+        userRef.child("online").setValue(true);
+        userRef.child("device_token").setValue(FirebaseInstanceId.getInstance().getToken());
+    }
+
 
 }

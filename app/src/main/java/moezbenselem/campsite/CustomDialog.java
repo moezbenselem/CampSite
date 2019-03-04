@@ -22,6 +22,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 */
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -34,7 +39,7 @@ import java.util.Map;
  * Created by Moez on 30/04/2018.
  */
 
-public class CustomDialog  extends Dialog implements
+public class CustomDialog extends Dialog implements
         View.OnClickListener {
 
     SharedPreferences sharedPreferences;
@@ -42,10 +47,10 @@ public class CustomDialog  extends Dialog implements
     public Dialog d;
     public Button save, cancel;
     EditText etStatus;
-    //DatabaseReference mDatabase;
+    DatabaseReference mDatabase;
     String uid;
 
-    public CustomDialog(Activity a , String uid) {
+    public CustomDialog(Activity a, String uid) {
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
@@ -59,13 +64,13 @@ public class CustomDialog  extends Dialog implements
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.dialog_layout);
 
-            etStatus = (EditText)findViewById(R.id.dialog_status);
-            save = (Button) findViewById(R.id.btn_save);
-            cancel = (Button) findViewById(R.id.btn_no);
+            etStatus = findViewById(R.id.dialog_status);
+            save = findViewById(R.id.btn_save);
+            cancel = findViewById(R.id.btn_no);
             save.setOnClickListener(this);
             cancel.setOnClickListener(this);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -75,9 +80,9 @@ public class CustomDialog  extends Dialog implements
         switch (v.getId()) {
             case R.id.btn_save:
 
-                //mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+                mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
                 String status = etStatus.getText().toString();
-                /*mDatabase.child("status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
+                mDatabase.child("status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -87,7 +92,6 @@ public class CustomDialog  extends Dialog implements
                     }
                 });
 
-*/
                 break;
             case R.id.btn_no:
                 dismiss();
@@ -97,7 +101,6 @@ public class CustomDialog  extends Dialog implements
         }
         dismiss();
     }
-
 
 
 }

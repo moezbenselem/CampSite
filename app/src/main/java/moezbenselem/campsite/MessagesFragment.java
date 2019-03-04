@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -47,11 +48,11 @@ public class MessagesFragment extends Fragment {
 
 
     DatabaseReference convRef;
-    String current_user_id;
     View mainView;
     DatabaseReference messageRef;
     RecyclerView recyclerConv;
 
+    Query friendsQuery;
 
 
     @Override
@@ -60,8 +61,8 @@ public class MessagesFragment extends Fragment {
         try {
 
 
-            recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_friends);
-            recyclerConv = (RecyclerView) getView().findViewById(R.id.recycler_discu);
+            recyclerView =  getView().findViewById(R.id.recycler_friends);
+            recyclerConv =  getView().findViewById(R.id.recycler_discu);
 
 
             LinearLayoutManager layoutManager
@@ -79,6 +80,7 @@ public class MessagesFragment extends Fragment {
 
             mAuth = FirebaseAuth.getInstance();
             friendsRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(mAuth.getCurrentUser().getDisplayName());
+
             friendsRef.keepSynced(true);
 
             usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -96,18 +98,26 @@ public class MessagesFragment extends Fragment {
 
                             System.out.println("key " + child.getKey());
 
-                            usersRef.child(child.getKey()).addValueEventListener(new ValueEventListener() {
+                            Query userQuery = usersRef.child(child.getKey()).orderByChild("online");
+
+                            userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                    User user = dataSnapshot.getValue(User.class);
-                                    System.out.println(user.email);
-                                    System.out.println(user.username);
-                                    listFriends.add(user);
+                                    try {
 
-                                    adapter = new FriendsAdapter(listFriends, getContext());
-                                    recyclerView.setAdapter(adapter);
 
+                                        User user = dataSnapshot.getValue(User.class);
+                                        System.out.println(user.email);
+                                        System.out.println(user.username);
+                                        listFriends.add(user);
+
+                                        adapter = new FriendsAdapter(listFriends, getContext());
+                                        recyclerView.setAdapter(adapter);
+                                    }catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
                                 }
 
                                 @Override
@@ -115,6 +125,7 @@ public class MessagesFragment extends Fragment {
 
                                 }
                             });
+
 
 
                         }
@@ -154,6 +165,10 @@ public class MessagesFragment extends Fragment {
                                     String type = dataSnapshot.child("type").getValue().toString();
                                     System.out.println(type);
                                     String from = dataSnapshot.child("from").getValue().toString();
+                                    if (dataSnapshot.hasChild("online")) {
+                                        convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
+                                    }
+
                                     if (type.equals("text")) {
                                         convViewHolder.setMessage(data, type, from, conv.isSeen());
                                     } else if (type.equals("image")) {
@@ -182,10 +197,11 @@ public class MessagesFragment extends Fragment {
 
                                         final User user = dataSnapshot.getValue(User.class);
 
-                                        //if (dataSnapshot.hasChild("online")) {
-                                        //  convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
-
+                                        if (dataSnapshot.hasChild("online")) {
+                                            convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
+                                        }
                                         convViewHolder.setName(user.getUsername());
+
                                         convViewHolder.setUserImage(user.getThumb_image(),user.getGender(), getContext());
                                         convViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                             public void onClick(View view) {
@@ -219,9 +235,9 @@ public class MessagesFragment extends Fragment {
 
                                         final User user = dataSnapshot.getValue(User.class);
 
-                                        //if (dataSnapshot.hasChild("online")) {
-                                        //  convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
-
+                                        if (dataSnapshot.hasChild("online")) {
+                                            convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
+                                        }
                                         convViewHolder.setName(user.getUsername());
                                         convViewHolder.setUserImage(user.getThumb_image(),user.getGender(), getContext());
                                         convViewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -248,10 +264,11 @@ public class MessagesFragment extends Fragment {
 
                                         final User user = dataSnapshot.getValue(User.class);
 
-                                        //if (dataSnapshot.hasChild("online")) {
-                                        //  convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
-
+                                        if (dataSnapshot.hasChild("online")) {
+                                            convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
+                                        }
                                         convViewHolder.setName(user.getUsername());
+
                                         convViewHolder.setUserImage(user.getThumb_image(),user.getGender(), getContext());
                                         convViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                             public void onClick(View view) {
@@ -284,6 +301,22 @@ public class MessagesFragment extends Fragment {
                                 }
                             });
 
+
+                            usersRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    if (dataSnapshot.hasChild("online")) {
+                                        convViewHolder.setUserOnline(dataSnapshot.child("online").getValue().toString());
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     };
 
@@ -321,7 +354,7 @@ public class MessagesFragment extends Fragment {
         public void setMessage(String message, String type, String from, boolean isSeen) {
 
             try {
-                TextView userStatusView = (TextView) this.mView.findViewById(R.id.item_status);
+                TextView userStatusView =  this.mView.findViewById(R.id.item_status);
                 System.out.println("from ==== " + from);
                 String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                 if (!type.equals("image")) {
@@ -398,11 +431,11 @@ public class MessagesFragment extends Fragment {
             }
         }
 
-        /*public void setUserOnline(String online_status) {
+        public void setUserOnline(String online_status) {
             try {
 
 
-                ImageView userOnlineView = (ImageView) this.mView.findViewById(R.id.online_icon);
+                ImageView userOnlineView =  this.mView.findViewById(R.id.online_icon);
                 if (online_status.equals("true")) {
                     userOnlineView.setVisibility(View.VISIBLE);
                 } else {
@@ -412,7 +445,7 @@ public class MessagesFragment extends Fragment {
                 e.printStackTrace();
             }
 
-        }*/
+        }
 
 
     }

@@ -62,22 +62,22 @@ public class EventsFragment extends Fragment {
             mAuth = FirebaseAuth.getInstance();
             mDataBase = FirebaseDatabase.getInstance().getReference().child("Events");
 
-            card_new = (CardView) getView().findViewById(R.id.card_new_event);
-            btDate = (Button) card_new.findViewById(R.id.btDate);
-            btTime = (Button) card_new.findViewById(R.id.btTime);
-            btPlus = (Button) card_new.findViewById(R.id.btPlus);
-            btAnnuler = (Button) card_new.findViewById(R.id.bt_annuler);
-            btEffectuer = (Button) card_new.findViewById(R.id.bt_post);
-            layoutContenu = (RelativeLayout) card_new.findViewById(R.id.layout_contenu);
-            layoutHeader = (LinearLayout) card_new.findViewById(R.id.layout_header);
+            card_new =  getView().findViewById(R.id.card_new_event);
+            btDate =  card_new.findViewById(R.id.btDate);
+            btTime =  card_new.findViewById(R.id.btTime);
+            btPlus = card_new.findViewById(R.id.btPlus);
+            btAnnuler =  card_new.findViewById(R.id.bt_annuler);
+            btEffectuer =  card_new.findViewById(R.id.bt_post);
+            layoutContenu =  card_new.findViewById(R.id.layout_contenu);
+            layoutHeader =  card_new.findViewById(R.id.layout_header);
 
-            etDate = (EditText) card_new.findViewById(R.id.etDate);
-            etTime = (EditText) card_new.findViewById(R.id.etTime);
-            etEvent = (EditText) card_new.findViewById(R.id.etEvent);
-            etTopic = (EditText) card_new.findViewById(R.id.etTopic);
-            etLoc = (EditText) card_new.findViewById(R.id.etLoc);
+            etDate =  card_new.findViewById(R.id.etDate);
+            etTime = card_new.findViewById(R.id.etTime);
+            etEvent =  card_new.findViewById(R.id.etEvent);
+            etTopic =  card_new.findViewById(R.id.etTopic);
+            etLoc =  card_new.findViewById(R.id.etLoc);
 
-            btPlus.setOnClickListener(new View.OnClickListener() {
+            card_new.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -167,7 +167,7 @@ public class EventsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_events, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_events);
+        recyclerView = view.findViewById(R.id.recycler_events);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -253,11 +253,11 @@ public class EventsFragment extends Fragment {
         public eventsViewHolder(View itemView){
             super(itemView);
             mView = itemView;
-            tvAdmin = (TextView)itemView.findViewById(R.id.tv_admin);
-            tvDate = (TextView)itemView.findViewById(R.id.tv_date);
-            tvEvent = (TextView)itemView.findViewById(R.id.tv_event);
-            tvLoc = (TextView)itemView.findViewById(R.id.tv_location);
-            tvTopic = (TextView)itemView.findViewById(R.id.tv_topic);
+            tvAdmin = itemView.findViewById(R.id.tv_admin);
+            tvDate = itemView.findViewById(R.id.tv_date);
+            tvEvent = itemView.findViewById(R.id.tv_event);
+            tvLoc = itemView.findViewById(R.id.tv_location);
+            tvTopic = itemView.findViewById(R.id.tv_topic);
 
         }
 

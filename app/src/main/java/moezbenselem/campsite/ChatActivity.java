@@ -1,23 +1,22 @@
 package moezbenselem.campsite;
 
-import android.app.ActionBar;
+
 import android.app.ProgressDialog;
-import android.content.Context;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.preference.PreferenceManager;
+
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
 import android.view.LayoutInflater;
-import android.view.Menu;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,13 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -78,6 +76,7 @@ public class ChatActivity extends AppCompatActivity {
     public static int messages_numer = 10, GALLERY_PICK = 1321;
     int current_page = 1;
     boolean fromRefresh = false;
+    DatabaseReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +86,14 @@ public class ChatActivity extends AppCompatActivity {
         try {
 
 
+
+
+
             mAuth = FirebaseAuth.getInstance();
             if (mAuth.getCurrentUser() != null) {
-                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+                userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());
                 userRef.child("online").setValue(true);
+                userRef.child("device_token").setValue(FirebaseInstanceId.getInstance().getToken());
             }
 
 
@@ -111,13 +114,19 @@ public class ChatActivity extends AppCompatActivity {
             mActionBar.setDisplayShowTitleEnabled(true);
 
 
-            TextView tvName = (TextView) findViewById(R.id.tv_appbar_name);
-            tvOnline = (TextView) findViewById(R.id.tv_appbar_online);
-            onlineImage = (ImageView) findViewById(R.id.image_appbar_online);
-            userImageView = (CircleImageView) findViewById(R.id.icon_app_bar);
+            TextView tvName = findViewById(R.id.tv_appbar_name);
+            tvOnline = findViewById(R.id.tv_appbar_online);
+            onlineImage = findViewById(R.id.image_appbar_online);
+            userImageView = findViewById(R.id.icon_app_bar);
 
             chatUser = getIntent().getStringExtra("name");
             user_name = getIntent().getStringExtra("name");
+
+            if (chatUser == null) {
+                chatUser = FirebaseMessagingService.theSender;
+                user_name = FirebaseMessagingService.theSender;
+            }
+
 
             DatabaseReference uRef = FirebaseDatabase.getInstance().getReference().child("Users");
             uRef.child(chatUser).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -128,6 +137,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.male_user).into(userImageView);
 
+
                 }
 
                 @Override
@@ -136,17 +146,28 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
 
-            swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeMessage);
+            userImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            btSend = (Button) findViewById(R.id.bt_send);
-            btImage = (Button) findViewById(R.id.bt_image);
+                    Intent toProfile = new Intent(ChatActivity.this, UserActivity.class);
+                    toProfile.putExtra("name", chatUser);
+                    startActivity(toProfile);
 
-            etMessage = (EditText) findViewById(R.id.input);
+                }
+            });
+
+            swipeRefreshLayout = findViewById(R.id.swipeMessage);
+
+            btSend = findViewById(R.id.bt_send);
+            btImage = findViewById(R.id.bt_image);
+
+            etMessage = findViewById(R.id.input);
 
 
             tvName.setText(user_name);
 
-            recyclerMessages = (RecyclerView) findViewById(R.id.recycler_messages);
+            recyclerMessages = findViewById(R.id.recycler_messages);
             linearLayoutManager = new LinearLayoutManager(this);
 
             linearLayoutManager.setStackFromEnd(true);
@@ -162,6 +183,9 @@ public class ChatActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     String online = "true";
+                    if (dataSnapshot.hasChild("online")) {
+                        online = dataSnapshot.child("online").getValue().toString();
+                    }
                     String thumb = dataSnapshot.child("thumb_image").getValue().toString();
                     if (online.equals("true")) {
                         tvOnline.setText("Online");
@@ -188,47 +212,6 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
 
-            /*rootRef.child("Chat").child(current_user_id).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    try {
-                        System.out.println("in value event listner chat current user");
-                        System.out.println("datasnapshot evnt listner chat = "+dataSnapshot.getValue());
-
-
-                            System.out.println("in value event listner chat current user");
-                            Map chatAddMap = new HashMap();
-                            chatAddMap.put("seen", false);
-                            chatAddMap.put("time", ServerValue.TIMESTAMP);
-
-                            Map chatUserMap = new HashMap();
-                            chatUserMap.put("Chat/" + current_user_id + "/" + chatUser, chatAddMap);
-                            chatUserMap.put("Chat/" + chatUser + "/" + current_user_id, chatAddMap);
-
-                            rootRef.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if(databaseError!=null)
-                                        System.out.println("in update seen to false");
-                                    else
-                                        System.out.println("errooorrr");
-                                }
-
-                            });
-
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });*/
-
 
             btSend.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -242,12 +225,6 @@ public class ChatActivity extends AppCompatActivity {
             btImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    /*Intent galleryIntent = new Intent();
-                    galleryIntent.setType("image*//*");
-                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-                    startActivityForResult(galleryIntent,GALLERY_PICK);*/
 
                     CropImage.activity()
                             .setGuidelines(CropImageView.Guidelines.ON)
@@ -297,13 +274,6 @@ public class ChatActivity extends AppCompatActivity {
 
                                 System.out.println("message from objet message ===" + message.getMessage());
                                 messages.add(message);
-
-
-                                /// RecyclerView.LayoutManager recyce = new LinearLayoutManager(MainActivity.this);
-                                // recycle.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-
-                                //recyclerMessages.setItemAnimator(new DefaultItemAnimator());
-
 
                                 if (messages.get(messages.size() - 1).getFrom().equals(chatUser)) {
                                     System.out.println("in test from");
@@ -440,7 +410,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -452,10 +422,6 @@ public class ChatActivity extends AppCompatActivity {
 
         try {
 
-
-            System.out.println("outside result if");
-            System.out.println("request code == " + requestCode + " mine ==  " + GALLERY_PICK);
-            System.out.println("result code == " + resultCode + " ok ==  " + RESULT_OK);
             if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                 System.out.println("inside result if");
 
@@ -485,7 +451,6 @@ public class ChatActivity extends AppCompatActivity {
                         final String push_key = userMPush.getKey();
 
                         final StorageReference filePath = imageRef.child("message_images").child(push_key + ".jpg");
-
 
                         filePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -538,64 +503,26 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         });
 
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                }
 
-                    catch(Exception e){
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-                /*filePath.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
-                        if (task.isSuccessful()) {
-
-                            String downloadUrl = task.getResult().getDownloadUrl().toString();
-
-                            Map messageMap = new HashMap();
-
-                            messageMap.put("message", downloadUrl);
-                            messageMap.put("time", ServerValue.TIMESTAMP);
-                            messageMap.put("seen", false);
-                            messageMap.put("type", "image");
-                            messageMap.put("from", current_user_id);
-
-                            Map messageUserMap = new HashMap();
-                            messageUserMap.put(current_user + "/" + push_key, messageMap);
-                            messageUserMap.put(current_chat + "/" + push_key, messageMap);
-
-                            rootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
-                                    if (databaseError == null) {
-                                        etMessage.setText("");
-                                        btSend.setEnabled(true);
-                                    } else {
-                                        Toast.makeText(ChatActivity.this, "Message Not Sent !", Toast.LENGTH_LONG).show();
-                                        btSend.setEnabled(true);
-                                    }
-                                }
-                            });
-
-                        }
-
-                    }
-                });
-*/
     }
-} catch(Exception e){
-        e.printStackTrace();
-        }
 
-        }
-
-@Override
-public boolean onSupportNavigateUp(){
+    @Override
+    public boolean onSupportNavigateUp() {
 
         onBackPressed();
         return true;
-        }
-        }
+    }
+
+
+}
 
 

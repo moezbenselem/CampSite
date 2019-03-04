@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     DatabaseReference mDatabase;
     DatabaseReference userReference;
-
+    StorageReference filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +76,11 @@ public class LoginActivity extends AppCompatActivity {
             userReference = FirebaseDatabase.getInstance().getReference().child("Users");
             mStorageRef = FirebaseStorage.getInstance().getReference();
 
-            tv = (TextView) findViewById(R.id.textView);
-            etName = (EditText) findViewById(R.id.et_firstname);
-            etEmail = (EditText) findViewById(R.id.et_email);
-            etPsw = (EditText) findViewById(R.id.et_password);
-            etConfirm = (EditText) findViewById(R.id.et_confirm_password);
+            tv =  findViewById(R.id.textView);
+            etName =  findViewById(R.id.et_firstname);
+            etEmail =  findViewById(R.id.et_email);
+            etPsw =  findViewById(R.id.et_password);
+            etConfirm =  findViewById(R.id.et_confirm_password);
             et_login_username = findViewById(R.id.et_login_username);
             et_login_password = findViewById(R.id.et_login_password);
 
@@ -179,9 +179,6 @@ public class LoginActivity extends AppCompatActivity {
             });
 
 
-
-            //FIREBASE SECTION
-
             bt_login_confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -197,8 +194,8 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Empty Fields !", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        progressDialog.setTitle("Connexion en cours");
-                        progressDialog.setMessage("Veuillez patienter connexion en cours !");
+                        progressDialog.setTitle("Connecting");
+                        progressDialog.setMessage("Please wait you are being connected !");
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
                         loginUSer(login, psw);
@@ -280,9 +277,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         System.out.println("createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Registration Failed !\n"+task.getException().getMessage(),
                                     Toast.LENGTH_LONG).show();
@@ -291,11 +285,8 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
 
                             try {
-                                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                                String UserId = currentUser.getUid();
 
                                 String device_token = FirebaseInstanceId.getInstance().getToken();
-
                                 mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(nom);
 
                                 HashMap<String, String> userMap = new HashMap<String, String>();
@@ -353,15 +344,11 @@ public class LoginActivity extends AppCompatActivity {
                                     });
                                 }
 
-
-
-
-                            }catch (Exception e){
+    }catch (Exception e){
                                 e.printStackTrace();
                             }
                         }
 
-                        // ...
                     }
                 });
 
@@ -386,7 +373,6 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_LONG).show();
                         } else {
 
-                            String onlide_user_id = mAuth.getCurrentUser().getUid();
                             String device_token = FirebaseInstanceId.getInstance().getToken();
 
                             userReference.child(mAuth.getCurrentUser().getDisplayName().toString()).child("device_token").setValue(device_token).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -411,27 +397,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
     public void uploadImage(final String nom){
 
         try {
 
-
-            /*File thumb_file = new File(resultUri.getPath());
-            final Bitmap thumb_image = new Compressor(this).setMaxHeight(200).setMaxWidth(200)
-                    .setQuality(75)
-                    .compressToBitmap(thumb_file);
-
-            String path = MediaStore.Images.Media.insertImage(LoginActivity.this.getContentResolver(), thumb_image, nom, null);
-            final Uri thumb_uri = Uri.parse(path);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            thumb_image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            final byte[] thumb_byte = baos.toByteArray();
-
-*/
-            final StorageReference thumbfilePath = mStorageRef.child("users").child("thumbs").child(nom + ".jpg");
-
-            final StorageReference filePath = mStorageRef.child("users").child(nom + ".jpg");
+            filePath = mStorageRef.child("users").child(nom + ".jpg");
 
             filePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -498,14 +469,6 @@ public class LoginActivity extends AppCompatActivity {
 
             });
 
-
-
-
-
-
-
-
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -521,13 +484,9 @@ public class LoginActivity extends AppCompatActivity {
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
             if (user != null) {
-
                 toMain();
-
             }
             else {
-
-
 
             }
         }catch (Exception e){
@@ -535,6 +494,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     public void toMain() {
         Intent toMainAct = new Intent(LoginActivity.this, MainActivity.class);

@@ -95,7 +95,7 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    CustomDialog cd = new CustomDialog(ProfileFragment.this.getActivity(), "current_id");
+                    CustomDialog cd = new CustomDialog(ProfileFragment.this.getActivity(), mAuth.getCurrentUser().getDisplayName());
                     cd.show();
 
                 }
