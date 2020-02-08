@@ -1,27 +1,25 @@
 package moezbenselem.campsite;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -44,7 +42,7 @@ public class RechercheFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_search);
+        recyclerView = getView().findViewById(R.id.recycler_search);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -152,9 +150,9 @@ public class RechercheFragment extends Fragment {
         public usersViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            tvName = (TextView) itemView.findViewById(R.id.item_display_name);
-            tvStatus = (TextView) itemView.findViewById(R.id.item_status);
-            imageView = (CircleImageView) itemView.findViewById(R.id.item_image);
+            tvName = itemView.findViewById(R.id.item_display_name);
+            tvStatus = itemView.findViewById(R.id.item_status);
+            imageView = itemView.findViewById(R.id.item_image);
             onlineIcon = itemView.findViewById(R.id.online_icon);
 
         }

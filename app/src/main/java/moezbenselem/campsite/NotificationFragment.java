@@ -4,19 +4,19 @@ package moezbenselem.campsite;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,7 +47,7 @@ public class NotificationFragment extends Fragment {
         try {
 
 
-            recyclerNotif = (RecyclerView) getView().findViewById(R.id.recycler_notif);
+            recyclerNotif = getView().findViewById(R.id.recycler_notif);
             LinearLayoutManager layoutManagerNotif
                     = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
@@ -128,7 +128,7 @@ public class NotificationFragment extends Fragment {
         public void setBody(String type, final String from, String time, final Context cnx) {
 
             try {
-                TextView bodyView = (TextView) this.mView.findViewById(R.id.item_body);
+                TextView bodyView = this.mView.findViewById(R.id.item_body);
                 String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                 ((TextView) this.mView.findViewById(R.id.item_display_name)).setText(from);
                 ((TextView) this.mView.findViewById(R.id.item_time)).setText(time);

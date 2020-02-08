@@ -1,13 +1,13 @@
 package moezbenselem.campsite;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,11 +59,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             Message m = listMessages.get(position);
 
 
-            if (m.getFrom().equals(mCurrentUser.getDisplayName().toString())) {
+            if (m.getFrom().equals(mCurrentUser.getDisplayName())) {
                 return MessageAdapter.OUTGOING;
 
             }
-            if (m.getFrom() != (mCurrentUser.getDisplayName().toString())) {
+            if (m.getFrom() != (mCurrentUser.getDisplayName())) {
                 return MessageAdapter.INCOMING;
             }
         } catch (Exception e) {

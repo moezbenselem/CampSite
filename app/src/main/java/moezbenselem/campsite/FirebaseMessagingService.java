@@ -1,26 +1,16 @@
 package moezbenselem.campsite;
 
-import android.app.*;
-import android.content.Context;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.NotificationCompat;
-import android.view.Menu;
-import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 

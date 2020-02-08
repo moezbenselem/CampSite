@@ -2,16 +2,15 @@ package moezbenselem.campsite;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -126,9 +125,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.usersViewHolde
             try {
 
                 mView = itemView;
-                tvName = (TextView)itemView.findViewById(R.id.item_display_name);
-                tvStatus = (TextView)itemView.findViewById(R.id.item_status);
-                imageView = (CircleImageView) itemView.findViewById(R.id.item_image);
+                tvName = itemView.findViewById(R.id.item_display_name);
+                tvStatus = itemView.findViewById(R.id.item_status);
+                imageView = itemView.findViewById(R.id.item_image);
                 onlineIcon = itemView.findViewById(R.id.online_icon);
 
             }catch (Exception e){

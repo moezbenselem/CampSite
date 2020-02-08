@@ -2,21 +2,11 @@ package moezbenselem.campsite;
 
 
 import android.app.ProgressDialog;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-
 import android.view.LayoutInflater;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,10 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -100,7 +94,7 @@ public class ChatActivity extends AppCompatActivity {
             current_user_id = mAuth.getCurrentUser().getDisplayName();
 
             //Get the default actionbar instance
-            android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
+            androidx.appcompat.app.ActionBar mActionBar = getSupportActionBar();
             mActionBar.setDisplayShowHomeEnabled(false);
             mActionBar.setDisplayShowTitleEnabled(false);
 

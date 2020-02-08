@@ -3,14 +3,9 @@ package moezbenselem.campsite;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +15,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,12 +36,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vstechlab.easyfonts.EasyFonts;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import id.zelory.compressor.Compressor;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -375,7 +368,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             String device_token = FirebaseInstanceId.getInstance().getToken();
 
-                            userReference.child(mAuth.getCurrentUser().getDisplayName().toString()).child("device_token").setValue(device_token).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            userReference.child(mAuth.getCurrentUser().getDisplayName()).child("device_token").setValue(device_token).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
 
