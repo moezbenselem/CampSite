@@ -51,6 +51,7 @@ public class CustomDialog extends Dialog implements
         super.onCreate(savedInstanceState);
         try {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
+
             setContentView(R.layout.dialog_layout);
 
             etStatus = findViewById(R.id.dialog_status);

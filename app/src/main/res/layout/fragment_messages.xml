@@ -17,6 +17,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_friends"
         android:layout_width="match_parent"
+        android:animateLayoutChanges="true"
         android:layout_height="85dp" />
 
 
@@ -32,6 +33,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_discu"
         android:layout_marginTop="5dp"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

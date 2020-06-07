@@ -1,0 +1,100 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".SettingsActivity">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <Button
+        android:id="@+id/btFiltre"
+        android:layout_width="24dp"
+        android:layout_marginTop="5dp"
+        android:layout_height="24dp"
+        android:tag="down"
+        android:background="@drawable/down"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tracking Service"
+        android:layout_alignBaseline="@+id/btFiltre"
+        android:layout_alignBottom="@+id/btFiltre"
+        android:layout_marginStart="5dp" />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:layout_margin="4dp"
+
+        android:layout_below="@id/textView4"
+        android:background="#FF909090" />
+    =
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_margin="5dp"
+        android:layout_marginStart="5dp"
+        android:animateLayoutChanges="true"
+        android:id="@+id/layout_filtres"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btFiltre"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/btFiltre">
+
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+
+            android:layout_height="wrap_content"
+            android:id="@+id/radioGroup">
+
+            <RadioButton
+                android:id="@+id/radioAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:text="Everyone" />
+
+            <RadioButton
+                android:id="@+id/radioDomaine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:text="customize" />
+
+            <RadioButton
+                android:id="@+id/radioTous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:checked="true"
+                android:text="Nobody" />
+
+        </RadioGroup>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_events_track"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</RelativeLayout>

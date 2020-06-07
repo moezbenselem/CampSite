@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     app:cardBackgroundColor="@color/black_overlay"
 
     >
@@ -12,18 +12,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-
+    android:padding="5dp"
     android:orientation="vertical" >
 
 
-    <EditText
-        android:id="@+id/dialog_status"
+    <TextView
+        android:id="@+id/tv_event_d"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Type Your Status"
-        android:layout_margin="5dp"
-        android:inputType="textPersonName" />
+        android:layout_marginTop="2dp"
+        android:textAlignment="center"
+        android:text="Would you like to :" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -35,23 +34,33 @@
 
 
         <Button
-            android:id="@+id/btn_save"
+            android:id="@+id/btn_chat"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_weight="2"
             android:layout_centerHorizontal="true"
             android:background="@drawable/bt_blue"
-            android:text="Save"
+            android:text="Chat"
 
             />
         <Button
-            android:id="@+id/btn_no"
+            android:id="@+id/btn_track"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_weight="2"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bt_vert"
+            android:text="Track"
+
+            />
+        <Button
+            android:id="@+id/btn_remove"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_weight="2"
             android:layout_centerHorizontal="true"
             android:background="@drawable/bt_gray"
-            android:text="Cancel"
+            android:text="Remove"
 
             />
         <!--<Button

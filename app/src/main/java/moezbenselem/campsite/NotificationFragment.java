@@ -38,7 +38,7 @@ public class NotificationFragment extends Fragment {
     DatabaseReference notifRef;
     RecyclerView recyclerNotif;
     FirebaseAuth mAuth;
-
+    DatabaseReference userRef;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -59,6 +59,8 @@ public class NotificationFragment extends Fragment {
             mAuth = FirebaseAuth.getInstance();
             notifRef = FirebaseDatabase.getInstance().getReference().child("notifications").child(mAuth.getCurrentUser().getDisplayName());
 
+
+
             FirebaseRecyclerAdapter<Notification,NotifViewHolder> firebaseRecyclerAdapter =
                     new FirebaseRecyclerAdapter<Notification, NotifViewHolder>(Notification.class, R.layout.card_notif, NotifViewHolder.class, this.notifRef) {
                         @Override
@@ -72,12 +74,26 @@ public class NotificationFragment extends Fragment {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         try {
                                             if (dataSnapshot.hasChildren()) {
-                                                String from = dataSnapshot.child("from").getValue().toString(),
+                                                final String from = dataSnapshot.child("from").getValue().toString(),
                                                         time = dataSnapshot.child("time").getValue().toString(),
                                                         type = dataSnapshot.child("type").getValue().toString();
 
                                                 System.out.println(from + " " + type + " " + time);
-                                                viewHolder.setBody(type, from, time,getContext());
+                                                String image = "";
+                                                FirebaseDatabase.getInstance().getReference().child("Users").child(from).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        String image = dataSnapshot.child("image").getValue().toString();
+
+                                                        viewHolder.setBody(type, from, time,getContext(),image);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -125,7 +141,7 @@ public class NotificationFragment extends Fragment {
 
         }
 
-        public void setBody(String type, final String from, String time, final Context cnx) {
+        public void setBody(String type, final String from, String time, final Context cnx ,String image) {
 
             try {
                 TextView bodyView = this.mView.findViewById(R.id.item_body);
@@ -135,11 +151,12 @@ public class NotificationFragment extends Fragment {
                 if(type.equalsIgnoreCase("request"))
                 {
                     bodyView.setText("has sent you a friend request !");
-                    Picasso.with(cnx).load(R.drawable.request).networkPolicy(NetworkPolicy.OFFLINE)
+                    System.out.println("image notif : "+image);
+                    Picasso.with(cnx).load(image).networkPolicy(NetworkPolicy.OFFLINE)
                             .placeholder(R.drawable.request).into((CircleImageView)this.mView.findViewById(R.id.item_image), new Callback() {
                         @Override
                         public void onSuccess() {
-
+                            System.out.println("notif pic loaded !");
                         }
 
                         @Override

@@ -10,18 +10,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TeamFragment extends Fragment {
+public class TeamFragment extends Fragment{
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,9 +31,6 @@ public class TeamFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
-
     }
 
     @Override
@@ -45,29 +40,25 @@ public class TeamFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_team, container, false);
 
         // Setting ViewPager for each Tabs
-        ViewPager viewPager = view.findViewById(R.id.viewpager);
+        SwipeDisabledViewPager viewPager = view.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
+
         // Set Tabs inside Toolbar
         TabLayout tabs = view.findViewById(R.id.tabs_team);
         tabs.setupWithViewPager(viewPager);
 
         return view;
 
-
     }
 
     // Add Fragments to Tabs
-    private void setupViewPager(ViewPager viewPager) {
-
+    private void setupViewPager(SwipeDisabledViewPager viewPager) {
 
         Adapter adapter = new Adapter(getChildFragmentManager());
         adapter.addFragment(new GroupEventsFragment(), "Events");
-        adapter.addFragment(new GroupChatFragment(), "Chat");
+        adapter.addFragment(new TrackFragment(), "Map");
 
         viewPager.setAdapter(adapter);
-
-
-
     }
 
     static class Adapter extends FragmentPagerAdapter {
@@ -98,6 +89,5 @@ public class TeamFragment extends Fragment {
             return mFragmentTitleList.get(position);
         }
     }
-
 
 }

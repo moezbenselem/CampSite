@@ -3,11 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="moezbenselem.campsite.GroupEventsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="group events" />
-
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
+        android:layout_margin="5dp"
+    >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_events"
+            android:animateLayoutChanges="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 </FrameLayout>

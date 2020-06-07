@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -42,7 +43,7 @@ public class EventsFragment extends Fragment {
     EditText etDate , etTime,etLoc,etTopic,etEvent;
     String dateF="",dateD="",timeD="",timeF="",dateFinal="";
     FirebaseAuth mAuth;
-    DatabaseReference mDataBase;
+    DatabaseReference mDataBase,groupChatRef;
     DatePicker dtp;
     TimePicker timep;
     Calendar newCalendar;
@@ -60,6 +61,7 @@ public class EventsFragment extends Fragment {
 
             mAuth = FirebaseAuth.getInstance();
             mDataBase = FirebaseDatabase.getInstance().getReference().child("Events");
+            groupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChat");
 
             card_new =  getView().findViewById(R.id.card_new_event);
             btDate =  card_new.findViewById(R.id.btDate);
@@ -110,7 +112,7 @@ public class EventsFragment extends Fragment {
                     Calendar indate = Calendar.getInstance();
                     indate.set(year, month, dayOfMonth);
 
-                    etDate.setText(DateFormat.format("EEEE", indate) +" "+dayOfMonth+"-"+month+1+"-"+year);
+                    etDate.setText(DateFormat.format("EEEE", indate) +" "+dayOfMonth+"-"+(month+1)+"-"+year);
 
                     System.out.println(DateFormat.format("EEEE", indate));
 
@@ -207,6 +209,9 @@ public class EventsFragment extends Fragment {
                     etTime.setText("");
                     etTopic.setText("");
                     etEvent.setText("");
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put(mAuth.getCurrentUser().getDisplayName(), null);
+                    groupChatRef.updateChildren(updates);
                     btAnnuler.performClick();
                 }else
                     task.getException().printStackTrace();
@@ -228,13 +233,21 @@ public class EventsFragment extends Fragment {
                         mDataBase) {
                     @Override
                     protected void populateViewHolder(eventsViewHolder viewHolder, final Event model, int position) {
+                        model.setId(getRef(position).getKey());
 
-                        viewHolder.tvDate.append(model.getDate());
-                        viewHolder.tvEvent.append(model.getName());
-                        viewHolder.tvLoc.append(model.getLocation());
-                        viewHolder.tvTopic.append(model.getTopic());
-                        viewHolder.tvAdmin.append(model.getAdmin());
+                        viewHolder.tvEvent.setText("Event : " +model.getName());
+                        viewHolder.tvLoc.setText("Location : " +model.getLocation());
+                        viewHolder.tvTopic.setText("Topic : " +model.getTopic());
+                        viewHolder.tvAdmin.setText("Created By : " +model.getAdmin());
+                        viewHolder.tvDate.setText("Date : " +model.getDate());
 
+                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new EventDialog(getActivity(),model).show();
+
+                            }
+                        });
 
                     }
                 };

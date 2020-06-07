@@ -1,9 +1,11 @@
 package moezbenselem.campsite;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -108,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
     public static SearchView searchView;
 
     public static Context context;
-
+    private TrackService TrackService;
+    private Intent trackIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +131,15 @@ public class MainActivity extends AppCompatActivity {
         try {
             fragmentManager.beginTransaction().replace(R.id.content, ProfileFragment.class.newInstance())
                     .addToBackStack(null).commit();
+
+
+        TrackService = new TrackService();
+        trackIntent = new Intent(this, TrackService.getClass());
+
+        if (!isMyServiceRunning(TrackService.getClass())) {
+            this.startService(trackIntent);
+            System.out.println("service started from Track fragment");
+        }
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -224,6 +236,13 @@ public class MainActivity extends AppCompatActivity {
                     toStart();
                 }
 
+
+                return true;
+            }
+            if (id == R.id.action_settings) {
+
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
 
                 return true;
             }
@@ -350,6 +369,21 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                System.out.println("service is running");
+                return true;
+            }else
+            {
+                System.out.println("service is not running");
+            }
+        }
+        Log.i ("Service status", "Not running");
+        return false;
     }
 
 

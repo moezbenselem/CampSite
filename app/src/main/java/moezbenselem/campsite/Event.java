@@ -6,19 +6,28 @@ package moezbenselem.campsite;
 
 public class Event {
 
-    String location,date,topic,name,time,admin;
+    String id ,location,date,topic,name,time,admin;
 
     public Event() {
     }
 
 
-    public Event(String place, String date, String topic, String name, String time, String admin) {
+    public Event(String id, String place, String date, String topic, String name, String time, String admin) {
+        this.id = id;
         this.location = place;
         this.date = date;
         this.topic = topic;
         this.name = name;
         this.time = time;
         this.admin = admin;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLocation() {
