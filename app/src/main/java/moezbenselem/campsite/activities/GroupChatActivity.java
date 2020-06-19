@@ -171,12 +171,13 @@ public class GroupChatActivity extends AppCompatActivity {
             userImageView = findViewById(R.id.icon_app_bar);
             userImageView.setVisibility(View.GONE);
 
-            onlineImage = findViewById(R.id.online_icon);
+            onlineImage = findViewById(R.id.image_appbar_online);
+            onlineImage.setVisibility(View.GONE);
             userImageView.setVisibility(View.GONE);
 
             tvOnline = findViewById(R.id.tv_appbar_online);
             tvOnline.setVisibility(View.GONE);
-            ;
+            onlineImage.setVisibility(View.GONE);
 
             recyclerMessages = findViewById(R.id.recycler_messages);
             linearLayoutManager = new LinearLayoutManager(this);
@@ -411,7 +412,7 @@ public class GroupChatActivity extends AppCompatActivity {
                         DatabaseReference userMPush = rootRef.child("GroupChat").child(chatUser).push();
                         final String push_key = userMPush.getKey();
 
-                        final StorageReference filePath = imageRef.child("media/images/"+chatUser).child(push_key + ".jpg");
+                        final StorageReference filePath = imageRef.child("media/images/" + chatUser).child(push_key + ".jpg");
 
                         filePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -480,7 +481,7 @@ public class GroupChatActivity extends AppCompatActivity {
                             DatabaseReference userMPush = rootRef.child("GroupChat").child(chatUser).push();
                             final String push_key = userMPush.getKey();
 
-                            videoRef = storageRef.child("/media/videos/"+chatUser).child(push_key);
+                            videoRef = storageRef.child("/media/videos/" + chatUser).child(push_key);
 
                             //TODO: save the video in the db
                             uploadData(selectedVideoPath, push_key);
@@ -604,6 +605,15 @@ public class GroupChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+    }
+
+    @Override
+    protected void onPause() {
+        if (MainActivity.player != null) {
+            if (MainActivity.player.getPlayWhenReady())
+                MainActivity.player.setPlayWhenReady(false);
+        }
+        super.onPause();
     }
 }
 

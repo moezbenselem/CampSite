@@ -3,6 +3,7 @@ package moezbenselem.campsite.activities;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import moezbenselem.campsite.R;
 import moezbenselem.campsite.entities.Cord;
 
@@ -75,6 +77,15 @@ public class TrackingActivity extends AppCompatActivity implements PermissionsLi
 
         TextView tvTitle = findViewById(R.id.tv_appbar_name);
         tvTitle.setText("Tracking : " + eventName);
+
+        CircleImageView userImage = findViewById(R.id.icon_app_bar);
+        userImage.setVisibility(View.GONE);
+
+        ImageView onlineIcon = findViewById(R.id.image_appbar_online);
+        onlineIcon.setVisibility(View.GONE);
+
+        TextView onlineText = findViewById(R.id.tv_appbar_online);
+        onlineText.setVisibility(View.GONE);
 
         mapView = findViewById(R.id.mapView_activity);
         mapView.onCreate(savedInstanceState);

@@ -17,6 +17,7 @@ import moezbenselem.campsite.fragments.VideoFragment;
 
 public class AlbumsActivity extends AppCompatActivity {
 
+    public static String eventId, eventName;
     TabLayout tabLayout;
     ViewPager viewPager;
 
@@ -25,8 +26,15 @@ public class AlbumsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_albums);
 
+
         tabLayout = findViewById(R.id.tabs_album);
         viewPager = findViewById(R.id.pager_album);
+
+        Bundle extra = getIntent().getExtras();
+        eventId = extra.getString("eventId");
+        eventName = extra.getString("eventName");
+
+        setTitle("Album : " + eventName);
 
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
 

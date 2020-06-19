@@ -1,14 +1,23 @@
 package moezbenselem.campsite.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -26,13 +35,19 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 import moezbenselem.campsite.R;
 
 public class ShowMediaActivity extends Activity {
 
-    ImageView save;
-    String url, type;
+    final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1234;
+    final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 12345;
+    Button save;
+    String url, type, name;
     PhotoView photoView;
     PlayerView playerView;
     SimpleExoPlayer mPlayer;
@@ -45,15 +60,17 @@ public class ShowMediaActivity extends Activity {
 
         type = extra.getString("type");
         url = extra.getString("url");
+        name = extra.getString("name");
+
 
         try {
             photoView = findViewById(R.id.photo_view);
             playerView = findViewById(R.id.video_view);
             save = findViewById(R.id.btn_download);
-            if (type.equalsIgnoreCase("video")){
+            if (type.equalsIgnoreCase("video")) {
                 playerView.setVisibility(View.VISIBLE);
                 photoView.setVisibility(View.GONE);
-
+                save.setVisibility(View.GONE);
                 long mCurrentMillis = 0;
 
                 mPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getApplicationContext()),
@@ -138,33 +155,142 @@ public class ShowMediaActivity extends Activity {
                 });
 
 
-            }else if(type.equalsIgnoreCase("image")){
+            } else if (type.equalsIgnoreCase("image")) {
                 System.out.println("loading image");
                 playerView.setVisibility(View.GONE);
                 photoView.setVisibility(View.VISIBLE);
                 save.setVisibility(View.VISIBLE);
-                Picasso.with(getApplicationContext()).load(url).placeholder(R.drawable.loading).into(photoView);
+                Picasso.with(getApplicationContext()).load(url).placeholder(R.drawable.black).into(photoView);
             }
 
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    System.out.println("download clicked !");
+                    if (type.equalsIgnoreCase("image")) {
+                        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
+                        Picasso.with(getApplicationContext()).load(url).into(picassoImageTarget(getApplicationContext(), name + ".jpg"));
+                        Toast.makeText(getApplicationContext(),
+                                "Picture Saved !",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(mPlayer!=null){
+        if (mPlayer != null) {
             mPlayer.release();
             MainActivity.player = null;
         }
 
         super.onBackPressed();
     }
+
+    private void scanFile(String path) {
+
+        MediaScannerConnection.scanFile(ShowMediaActivity.this,
+                new String[]{path}, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("TAG", "Finished scanning " + path);
+                    }
+                });
+    }
+
+    private Target picassoImageTarget(Context context, final String filename) {
+        return new Target() {
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                new Thread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void run() {
+
+                        try {
+                            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                    != PackageManager.PERMISSION_GRANTED) {
+
+                                // Should we show an explanation?
+                                if (shouldShowRequestPermissionRationale(
+                                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                    // Explain to the user why we need to read the contacts
+                                }
+
+                                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+                                // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                                // app-defined int constant that should be quite unique
+
+                                return;
+                            }
+                            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                    != PackageManager.PERMISSION_GRANTED) {
+
+                                // Should we show an explanation?
+                                if (shouldShowRequestPermissionRationale(
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                    // Explain to the user why we need to read the contacts
+                                }
+
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+
+                                // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                                // app-defined int constant that should be quite unique
+
+                                return;
+                            }
+                            File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/Pictures/campsite");
+                            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Pictures/campsite", filename);
+
+                            dir.mkdirs();
+                            file.createNewFile();
+                            FileOutputStream ostream = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                            ostream.flush();
+                            ostream.close();
+                            scanFile(file.getAbsolutePath());
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                        //Toast.makeText(getApplicationContext(), "image saved to >>> "+file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                if (placeHolderDrawable != null) {
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void onPause() {
+        if (mPlayer != null) {
+            if (mPlayer.getPlayWhenReady())
+                mPlayer.setPlayWhenReady(false);
+        }
+        super.onPause();
+    }
+
+
 }

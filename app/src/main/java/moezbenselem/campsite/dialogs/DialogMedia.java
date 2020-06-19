@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -23,7 +22,7 @@ public class DialogMedia extends Dialog implements
     public Activity c;
     public ImageView save;
     String url, type;
-    PhotoView  photoView;
+    PhotoView photoView;
     PlayerView playerView;
     DatabaseReference mDatabase, groupChatRef;
     StorageReference storageReference;
@@ -46,12 +45,12 @@ public class DialogMedia extends Dialog implements
             photoView = findViewById(R.id.photo_view);
             playerView = findViewById(R.id.video_view);
             save = findViewById(R.id.btn_download);
-            if (type.equalsIgnoreCase("video")){
+            if (type.equalsIgnoreCase("video")) {
                 playerView.setVisibility(View.VISIBLE);
                 photoView.setVisibility(View.GONE);
 
 
-            }else if(type.equalsIgnoreCase("image")){
+            } else if (type.equalsIgnoreCase("image")) {
                 System.out.println("loading image");
                 playerView.setVisibility(View.GONE);
                 photoView.setVisibility(View.VISIBLE);

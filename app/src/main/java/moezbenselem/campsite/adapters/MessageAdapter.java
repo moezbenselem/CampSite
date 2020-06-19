@@ -196,8 +196,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     @Override
                     public void onClick(View v) {
                         Intent toShow = new Intent(context, ShowMediaActivity.class);
-                        toShow.putExtra("type","image");
-                        toShow.putExtra("url",m.getMessage());
+                        toShow.putExtra("type", "image");
+                        toShow.putExtra("url", m.getMessage());
+                        toShow.putExtra("name", new Date(m.getTime()).toString());
                         context.startActivity(toShow);
                     }
                 });
