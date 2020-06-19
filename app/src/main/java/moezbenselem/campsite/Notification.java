@@ -6,7 +6,7 @@ package moezbenselem.campsite;
 
 public class Notification {
 
-    String from,type,time;
+    String from, type, time;
 
 
     public Notification() {

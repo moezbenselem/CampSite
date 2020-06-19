@@ -7,7 +7,7 @@ import android.content.Context;
  * Created by Moez on 04/08/2018.
  */
 
-public class GetTimeAgo extends Application{
+public class GetTimeAgo extends Application {
 
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
@@ -15,7 +15,7 @@ public class GetTimeAgo extends Application{
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
-    public  String getTimeAgo(long time, Context ctx) {
+    public String getTimeAgo(long time, Context ctx) {
         if (time < 1000000000000L) {
             // if timestamp given in seconds, convert to millis
             time *= 1000;

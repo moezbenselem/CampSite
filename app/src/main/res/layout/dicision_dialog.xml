@@ -1,79 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
     app:cardBackgroundColor="@color/black_overlay"
 
     >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-
-    android:padding="5dp"
-    android:orientation="vertical" >
-
-
-    <TextView
-        android:id="@+id/tv_event_d"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textAlignment="center"
-        android:text="Would you like to :" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
 
-        android:orientation="horizontal" >
+        android:orientation="vertical"
+        android:padding="5dp">
 
 
-        <Button
-            android:id="@+id/btn_chat"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/bt_blue"
-            android:text="Chat"
+        <TextView
+            android:id="@+id/tv_event_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Would you like to :"
+            android:textAlignment="center"
+            android:textSize="15sp" />
 
-            />
-        <Button
-            android:id="@+id/btn_track"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/bt_vert"
-            android:text="Track"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
 
-            />
-        <Button
-            android:id="@+id/btn_remove"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/bt_gray"
-            android:text="Remove"
+            android:orientation="horizontal">
 
-            />
-        <!--<Button
-            android:id="@+id/btn_no"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="5dp"
-            android:background="@android:color/white"
-            android:clickable="true"
-            android:text="Cancel"
-            android:textColor="#5DBCD2"
-            android:textStyle="bold" />-->
+
+            <Button
+                android:id="@+id/btn_chat"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="2"
+                android:background="@drawable/bt_blue"
+                android:text="Chat"
+
+                />
+
+            <Button
+                android:id="@+id/btn_invite"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="2"
+                android:background="@drawable/bt_vert"
+                android:text="Invite"
+
+                />
+
+            <Button
+                android:id="@+id/btn_remove"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="2"
+                android:background="@drawable/bt_gray"
+                android:text="Remove"
+
+                />
+            <!--<Button
+                android:id="@+id/btn_no"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:background="@android:color/white"
+                android:clickable="true"
+                android:text="Cancel"
+                android:textColor="#5DBCD2"
+                android:textStyle="bold" />-->
+        </LinearLayout>
+
     </LinearLayout>
-
-</LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -4,16 +4,13 @@ import android.app.Application;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
-import me.leolin.shortcutbadger.ShortcutBadger;
+import moezbenselem.campsite.activities.MainActivity;
 
 /**
  * Created by Moez on 30/01/2019.
@@ -41,7 +38,7 @@ public class CampSite extends Application {
             Picasso.setSingletonInstance(built);
 
             mAuth = MainActivity.mAuth;
-            if(mAuth !=null)
+            if (mAuth != null)
                 if (mAuth.getCurrentUser() != null) {
 
                     FirebaseUser user = mAuth.getCurrentUser();
@@ -50,7 +47,7 @@ public class CampSite extends Application {
 
                 }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

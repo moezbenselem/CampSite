@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_event"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/card_event"
     android:layout_margin="5dp"
-    android:animateLayoutChanges="true"
     android:alpha="0.9"
+    android:animateLayoutChanges="true"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
     card_view:cardBackgroundColor="#CCCF"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="3dp"
-    card_view:contentPadding="4dp"
-    android:foreground="?selectableItemBackground"
-    android:clickable="true" >
+    card_view:contentPadding="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,14 +23,13 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/hands"
-            />
+            android:src="@drawable/hands" />
 
         <LinearLayout
             android:id="@+id/layout_header"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:visibility="visible"
             android:weightSum="5"
 
@@ -41,43 +39,36 @@
                 android:id="@+id/tv_event"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Event : "
                 android:layout_marginTop="2dp"
-                />
+                android:text="Event : " />
 
             <TextView
                 android:id="@+id/tv_topic"
-                android:layout_marginTop="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Topic : "
-                />
+                android:layout_marginTop="2dp"
+                android:text="Topic : " />
 
             <TextView
                 android:id="@+id/tv_location"
-                android:layout_marginTop="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Location : "
-                />
+                android:layout_marginTop="2dp"
+                android:text="Location : " />
 
             <TextView
                 android:id="@+id/tv_date"
-                android:layout_marginTop="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Date : "
-                />
+                android:layout_marginTop="2dp"
+                android:text="Date : " />
 
             <TextView
                 android:id="@+id/tv_admin"
-                android:layout_marginTop="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Created By "
-                />
-
-
+                android:layout_marginTop="2dp"
+                android:text="Created By " />
 
 
         </LinearLayout>

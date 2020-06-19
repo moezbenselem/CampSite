@@ -1,105 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.circularreveal.cardview.CircularRevealCardView
+<com.google.android.material.circularreveal.cardview.CircularRevealCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
 
 
     app:cardBackgroundColor="@color/black_overlay"
 
     >
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-
-    android:paddingHorizontal="10dp"
-    android:paddingVertical="5dp"
-    android:orientation="vertical" >
-
-
-    <TextView
-        android:id="@+id/tv_event_d"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Event : "
-        android:layout_marginTop="2dp"
-        />
-
-    <TextView
-        android:id="@+id/tv_topic_d"
-        android:layout_marginTop="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Topic : "
-        />
-
-    <TextView
-        android:id="@+id/tv_location_d"
-        android:layout_marginTop="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Location : "
-        />
-
-    <TextView
-        android:id="@+id/tv_date_d"
-        android:layout_marginTop="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Date : "
-        />
-
-    <TextView
-        android:id="@+id/tv_admin_d"
-        android:layout_marginTop="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Created By "
-        />
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
 
-        android:orientation="horizontal" >
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp">
 
 
-        <Button
-            android:id="@+id/btn_participer"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/bt_blue"
-            android:text="Join"
+        <TextView
+            android:id="@+id/tv_event_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Event : " />
 
-            />
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/bt_gray"
-            android:text="Cancel"
+        <TextView
+            android:id="@+id/tv_topic_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Topic : " />
 
-            />
-        <!--<Button
-            android:id="@+id/btn_no"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="5dp"
-            android:background="@android:color/white"
-            android:clickable="true"
-            android:text="Cancel"
-            android:textColor="#5DBCD2"
-            android:textStyle="bold" />-->
+        <TextView
+            android:id="@+id/tv_location_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Location : " />
+
+        <TextView
+            android:id="@+id/tv_date_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Date : " />
+
+        <TextView
+            android:id="@+id/tv_admin_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Created By " />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/btn_participer"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="2"
+                android:background="@drawable/bt_blue"
+                android:text="Join"
+
+                />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="2"
+                android:background="@drawable/bt_gray"
+                android:text="Cancel"
+
+                />
+            <!--<Button
+                android:id="@+id/btn_no"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:background="@android:color/white"
+                android:clickable="true"
+                android:text="Cancel"
+                android:textColor="#5DBCD2"
+                android:textStyle="bold" />-->
+        </LinearLayout>
+
     </LinearLayout>
-
-</LinearLayout>
 </com.google.android.material.circularreveal.cardview.CircularRevealCardView>

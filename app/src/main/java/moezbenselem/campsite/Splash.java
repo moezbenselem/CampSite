@@ -8,6 +8,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import moezbenselem.campsite.activities.LoginActivity;
+
 public class Splash extends AppCompatActivity {
 
     @Override
@@ -17,20 +19,19 @@ public class Splash extends AppCompatActivity {
 
         ImageView imageView = findViewById(R.id.imageView);
         //TextView textView = (TextView) findViewById(R.id.tv);
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade);
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
         imageView.startAnimation(animation);
         imageView.startAnimation(animation);
 
 
-
-        Thread timer = new Thread(){
+        Thread timer = new Thread() {
 
             @Override
             public void run() {
 
                 try {
                     sleep(4000);
-                    Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                     finish();
                     super.run();

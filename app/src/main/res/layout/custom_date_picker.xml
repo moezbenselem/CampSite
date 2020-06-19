@@ -4,16 +4,17 @@
     android:layout_height="match_parent"
 
     android:background="#00ab9c">
+
     <DatePicker
 
+        android:id="@+id/datePickerCst"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/datePickerCst"
-        android:calendarViewShown="false"
-        android:spinnersShown="true"
-
-
         android:layout_gravity="center_horizontal"
-        android:background="#009999"/>
+        android:background="#009999"
+
+
+        android:calendarViewShown="false"
+        android:spinnersShown="true" />
 
 </ScrollView>

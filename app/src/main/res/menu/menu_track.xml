@@ -5,8 +5,14 @@
     <item
         android:id="@+id/action_gps"
         android:icon="@android:drawable/ic_dialog_map"
-        app:showAsAction="always|collapseActionView"
-        android:title="Track"/>
+        android:title="Track"
+        app:showAsAction="always|collapseActionView" />
+
+    <item
+        android:id="@+id/action_album"
+        android:icon="@android:drawable/ic_menu_report_image"
+        android:title="Track"
+        app:showAsAction="always|collapseActionView" />
 
 
 </menu>

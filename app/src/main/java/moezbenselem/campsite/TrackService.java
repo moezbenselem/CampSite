@@ -11,12 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -27,10 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
-import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -38,17 +30,20 @@ import java.util.TimerTask;
 
 
 public class TrackService extends Service {
-    public TrackService() {
-    }
-
     Double lat = 0.0, lon = 0.0;
     Location loc;
     String provider;
     LocationManager locationManager;
     String token;
-
     FirebaseAuth mAuth;
     DatabaseReference myTrackRef;
+    LocationListener mLocationListener;
+    private Timer timer;
+    private TimerTask timerTask;
+
+
+    public TrackService() {
+    }
 
     @Override
     public void onCreate() {
@@ -78,7 +73,7 @@ public class TrackService extends Service {
                     lon = location.getLongitude();
                     lat = location.getLatitude();
 
-                    System.out.println("accuracy === "+loc.getAccuracy());
+                    System.out.println("accuracy === " + loc.getAccuracy());
 
                     System.out.println("longgggg from listner ======  " + lon);
                     System.out.println("laaatttt from listner ======  " + lat);
@@ -89,7 +84,7 @@ public class TrackService extends Service {
                     myTrackRef.child("data").push().setValue(updateHashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
+                            if (task.isSuccessful())
                                 System.out.println("Data Added from listner");
                             else
                                 System.out.println("ERROR FIREBASE FROM SERVICE");
@@ -126,7 +121,6 @@ public class TrackService extends Service {
         }
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -135,7 +129,6 @@ public class TrackService extends Service {
         //startTimer();
         return START_STICKY;
     }
-
 
     @Override
     public void onDestroy() {
@@ -150,19 +143,11 @@ public class TrackService extends Service {
 
     }
 
-
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
-
-
-
-    private Timer timer;
-    private TimerTask timerTask;
-    LocationListener  mLocationListener;
 
     public void startTimer() {
         timer = new Timer();
@@ -191,12 +176,13 @@ public class TrackService extends Service {
                         myTrackRef.child("data").push().setValue(updateHashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful())
+                                if (task.isSuccessful())
                                     System.out.println("Data Added from timer");
                                 else
                                     System.out.println("ERROR FIREBASE FROM SERVICE");
                             }
-                        });;
+                        });
+                        ;
 
                     }
 

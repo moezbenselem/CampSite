@@ -3,59 +3,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="moezbenselem.campsite.ChatActivity">
+    tools:context="moezbenselem.campsite.activities.ChatActivity">
 
 
+    <Button
+        android:id="@+id/bt_send"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
 
-<Button
-    android:layout_width="48dp"
-    android:layout_height="48dp"
-    android:clickable="true"
-    android:background="@drawable/send_message"
-    android:id="@+id/bt_send"
+        android:background="@drawable/send_message"
+        android:clickable="true" />
 
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentEnd="true"
-    />
-<Button
-    android:layout_width="48dp"
-    android:layout_height="48dp"
-    android:clickable="true"
-    android:background="@drawable/plus"
-    android:id="@+id/bt_image"
+    <Button
+        android:id="@+id/bt_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
 
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentStart="true"
-    />
+        android:background="@drawable/image"
+        android:clickable="true" />
 
-<EditText
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_toLeftOf="@id/bt_send"
-    android:layout_toRightOf="@id/bt_image"
-    android:layout_margin="3dp"
-    android:layout_alignParentBottom="true"
+    <Button
+        android:id="@+id/bt_video"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/bt_image"
 
-    android:hint="Input"
-    android:id="@+id/input"
-    />
+        android:background="@drawable/video"
+        android:clickable="true" />
+
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="3dp"
+        android:layout_toLeftOf="@id/bt_send"
+        android:layout_toRightOf="@id/bt_video"
+        android:hint="Input" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/swipeMessage"
-
-    android:layout_above="@+id/bt_send">
-
-        <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_messages"
+        android:id="@+id/swipeMessage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bt_send"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="16dp"
-        />
+
+        android:layout_above="@+id/bt_send">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bt_send"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="16dp" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

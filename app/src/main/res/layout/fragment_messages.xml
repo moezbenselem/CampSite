@@ -3,37 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="moezbenselem.campsite.MessagesFragment">
+    tools:context="moezbenselem.campsite.fragments.MessagesFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="2dp"
         android:layout_gravity="left"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="5dp"
         android:text="Friends :"
         android:textSize="14sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_friends"
         android:layout_width="match_parent"
-        android:animateLayoutChanges="true"
-        android:layout_height="85dp" />
+        android:layout_height="85dp"
+        android:animateLayoutChanges="true" />
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="2dp"
+        android:layout_marginTop="5dp"
         android:text="Chat :"
         android:textSize="14sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_discu"
-        android:layout_marginTop="5dp"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:animateLayoutChanges="true" />
 </LinearLayout>

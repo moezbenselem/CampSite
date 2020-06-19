@@ -3,26 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="moezbenselem.campsite.EventsFragment">
+    tools:context="moezbenselem.campsite.fragments.EventsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true"
         android:layout_margin="5dp"
-        >
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
         <include
-            layout="@layout/card_new_event"
             android:id="@+id/card_new_event"
+            layout="@layout/card_new_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <View
+            android:id="@+id/line"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:id="@+id/line"
 
             android:layout_margin="10dp"
             android:background="#FF909090" />
@@ -31,7 +30,7 @@
             android:id="@+id/recycler_events"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:animateLayoutChanges="true"/>
+            android:animateLayoutChanges="true" />
 
 
     </LinearLayout>

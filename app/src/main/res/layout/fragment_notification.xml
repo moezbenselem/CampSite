@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:animateLayoutChanges="true"
-    tools:context="moezbenselem.campsite.NotificationFragment">
+    android:orientation="vertical"
+    tools:context="moezbenselem.campsite.fragments.NotificationFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_notif"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_notif"
         android:animateLayoutChanges="true"
 
         >

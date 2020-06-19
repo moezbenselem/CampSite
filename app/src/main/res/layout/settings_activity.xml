@@ -1,57 +1,59 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".SettingsActivity">
+    tools:context=".activities.SettingsActivity">
 
     <!-- TODO: Update blank fragment layout -->
 
     <Button
         android:id="@+id/btFiltre"
         android:layout_width="24dp"
-        android:layout_marginTop="5dp"
         android:layout_height="24dp"
-        android:tag="down"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
         android:background="@drawable/down"
-        android:layout_alignParentEnd="true" />
+        android:tag="down" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tracking Service"
         android:layout_alignBaseline="@+id/btFiltre"
         android:layout_alignBottom="@+id/btFiltre"
-        android:layout_marginStart="5dp" />
+        android:layout_marginStart="5dp"
+        android:text="Tracking Service" />
+
     <View
         android:layout_width="wrap_content"
         android:layout_height="1px"
-        android:layout_margin="4dp"
-
         android:layout_below="@id/textView4"
+
+        android:layout_margin="4dp"
         android:background="#FF909090" />
     =
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_margin="5dp"
-        android:layout_marginStart="5dp"
-        android:animateLayoutChanges="true"
         android:id="@+id/layout_filtres"
-        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btFiltre"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/btFiltre">
+        android:layout_margin="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toStartOf="@+id/btFiltre"
+        android:animateLayoutChanges="true"
+        android:visibility="visible">
 
 
         <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
-            android:orientation="horizontal"
 
             android:layout_height="wrap_content"
-            android:id="@+id/radioGroup">
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/radioAll"
@@ -94,7 +96,6 @@
             app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </RelativeLayout>
