@@ -51,6 +51,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import moezbenselem.campsite.FirebaseMessagingService;
 import moezbenselem.campsite.GetTimeAgo;
 import moezbenselem.campsite.R;
@@ -89,6 +90,15 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        if(getIntent().getExtras().getString("intent")!=null)
+            if(FirebaseMessagingService.badgeCount>0){
+                FirebaseMessagingService.badgeCount--;
+                ShortcutBadger.applyCount(getApplicationContext(),FirebaseMessagingService.badgeCount);
+            }
+
+
+
         try {
             mAuth = FirebaseAuth.getInstance();
             if (mAuth.getCurrentUser() != null) {

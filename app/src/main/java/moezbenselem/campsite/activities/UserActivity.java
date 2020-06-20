@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
 import moezbenselem.campsite.FirebaseMessagingService;
 import moezbenselem.campsite.R;
 
@@ -63,7 +64,11 @@ public class UserActivity extends AppCompatActivity {
 
 
         try {
-
+            if(getIntent().getExtras().getString("intent")!=null)
+                if(FirebaseMessagingService.badgeCount>0){
+                    FirebaseMessagingService.badgeCount--;
+                    ShortcutBadger.applyCount(getApplicationContext(),FirebaseMessagingService.badgeCount);
+                }
 
             userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());
             userRef.child("online").setValue(true);

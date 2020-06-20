@@ -27,8 +27,11 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.leolin.shortcutbadger.ShortcutBadger;
+import moezbenselem.campsite.FirebaseMessagingService;
 import moezbenselem.campsite.Notification;
 import moezbenselem.campsite.R;
+import moezbenselem.campsite.activities.MainActivity;
 import moezbenselem.campsite.activities.UserActivity;
 
 
@@ -49,6 +52,10 @@ public class NotificationFragment extends Fragment {
 
         try {
 
+            if(FirebaseMessagingService.badgeCount>0){
+                FirebaseMessagingService.badgeCount=0;
+                ShortcutBadger.applyCount(getActivity().getApplicationContext(),FirebaseMessagingService.badgeCount);
+            }
 
             recyclerNotif = getView().findViewById(R.id.recycler_notif);
             LinearLayoutManager layoutManagerNotif

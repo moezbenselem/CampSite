@@ -22,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+import moezbenselem.campsite.FirebaseMessagingService;
 import moezbenselem.campsite.R;
 import moezbenselem.campsite.adapters.ConvAdapter;
 import moezbenselem.campsite.adapters.FriendsAdapter;
@@ -53,7 +55,10 @@ public class MessagesFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
-
+            if(FirebaseMessagingService.badgeCount>0){
+                FirebaseMessagingService.badgeCount=0;
+                ShortcutBadger.applyCount(getActivity().getApplicationContext(),FirebaseMessagingService.badgeCount);
+            }
 
             recyclerView = getView().findViewById(R.id.recycler_friends);
             recyclerConv = getView().findViewById(R.id.recycler_discu);

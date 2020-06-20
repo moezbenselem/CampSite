@@ -1,10 +1,12 @@
 package moezbenselem.campsite;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
@@ -14,6 +16,7 @@ import java.util.Random;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import moezbenselem.campsite.activities.ChatActivity;
+import moezbenselem.campsite.activities.MainActivity;
 import moezbenselem.campsite.activities.UserActivity;
 
 /**
@@ -26,9 +29,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     String image, sender_id, sender_name, action, notif_title, notif_body;
     Bitmap contactPic = null;
     NotificationCompat.Builder mBuilder;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    int badgeCount;
+    public static int badgeCount=0;
+
     int mNotificationId;
     Intent resultIntent;
     PendingIntent resultPendingIntent;
@@ -37,44 +39,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onCreate() {
         super.onCreate();
 
-        mBuilder = new NotificationCompat.Builder(this);
+            mBuilder = new NotificationCompat.Builder(getApplicationContext(), "CAMPSITE");
 
-        /*sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = sharedPreferences.edit();
+            if(badgeCount>=0){
+                ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
+            }else
+                ShortcutBadger.removeCount(getApplicationContext());
 
-        badgeCount = sharedPreferences.getInt("badgeCount",0);*/
 
-        ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
-
-        /*try {
-            contactPic = new AsyncTask<Void, Void, Bitmap>() {
-                @Override
-                protected Bitmap doInBackground(Void... params) {
-                    try {
-                        return Picasso.with(MainActivity.context).load(image)
-                                .resize(200, 200)
-                                .placeholder(R.drawable.camp_icon)
-                                .error(R.drawable.camp_icon)
-                                .get();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            }.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        if (contactPic != null) {
-            mBuilder.setLargeIcon(contactPic);
-            //mBuilder.setSmallIcon(BitmapFactory.decodeResource(MainActivity.context.getResources(),contactPic);
-        } else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(MainActivity.context.getResources(), R.drawable.camp_icon));
-        }
-*/
     }
 
     @Override
@@ -82,34 +54,40 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         super.onMessageReceived(remoteMessage);
 
         try {
-
-            //badgeCount++;
-            //ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
-            //editor.putInt("badgeCount",badgeCount);
-            //editor.apply();
-
-
-            notif_title = remoteMessage.getNotification().getTitle();
+            badgeCount++;
+            System.out.println("badge count : "+badgeCount);
+            ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
+            /*notif_title = remoteMessage.getNotification().getTitle();
             notif_body = remoteMessage.getNotification().getBody();
             action = remoteMessage.getNotification().getClickAction();
+            image = remoteMessage.getNotification().getIcon();*/
+
+
+            notif_title = remoteMessage.getData().get("title");
+            notif_body = remoteMessage.getData().get("body");
+            action = remoteMessage.getData().get("click_action");
+            image = remoteMessage.getData().get("icon");
+
             sender_id = remoteMessage.getData().get("sender_id");
             sender_name = remoteMessage.getData().get("sender_name");
-            image = remoteMessage.getNotification().getIcon();
+
 
             theSender = sender_name;
-            System.out.println("the sender id = " + sender_id);
-            System.out.println("the sender name = " + sender_name);
+            /*System.out.println("notif the sender id = " + sender_id);
+            System.out.println("notif the sender name = " + sender_name);*/
 
 
             if (image.equalsIgnoreCase("request")) {
+
                 resultIntent = new Intent(this, UserActivity.class);
                 resultIntent.putExtra("uid", sender_id);
                 resultIntent.putExtra("name", sender_name);
+                resultIntent.putExtra("intent", "notification");
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 
                 resultPendingIntent = PendingIntent.getActivity(
-                        this,
+                        getApplicationContext(),
                         0,
                         resultIntent,
                         PendingIntent.FLAG_CANCEL_CURRENT
@@ -119,11 +97,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 resultIntent = new Intent(this, ChatActivity.class);
                 resultIntent.putExtra("uid", sender_id);
                 resultIntent.putExtra("name", sender_name);
+                resultIntent.putExtra("intent", "notification");
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 
                 resultPendingIntent = PendingIntent.getActivity(
-                        this,
+                        getApplicationContext(),
                         0,
                         resultIntent,
                         PendingIntent.FLAG_CANCEL_CURRENT
@@ -131,6 +110,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             }
 
             mBuilder
+                    .setWhen(System.currentTimeMillis())
+                    .setDefaults(Notification.DEFAULT_ALL)
                     .setSmallIcon(R.drawable.camp_icon)
                     .setContentTitle(notif_title)
                     .setContentText(notif_body)
@@ -139,16 +120,15 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .setContentIntent(resultPendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-
             android.app.Notification notification = mBuilder.build();
 
-
             mNotificationId = new Random().nextInt();
-            NotificationManager notifMAnager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            NotificationManager notifManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 
 // notificationId is a unique int for each notification that you must define
-            notifMAnager.notify(mNotificationId, notification);
+            notifManager.notify(mNotificationId, notification);
 
 
         } catch (Exception e) {

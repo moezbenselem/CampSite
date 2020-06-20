@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public static SearchView searchView;
     public static Context context;
     public static MenuItem myActionMenuItem;
-    static BottomNavigationView navigation;
+    public static BottomNavigationView navigation;
     FragmentManager fragmentManager = getSupportFragmentManager();
     DatabaseReference userRef;
     StorageReference mStorageRef;
@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_profile);
+
 
 
         mAuth = FirebaseAuth.getInstance();
