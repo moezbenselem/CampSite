@@ -64,10 +64,10 @@ public class UserActivity extends AppCompatActivity {
 
 
         try {
-            if(getIntent().getExtras().getString("intent")!=null)
-                if(FirebaseMessagingService.badgeCount>0){
+            if (getIntent().getExtras().getString("intent") != null)
+                if (FirebaseMessagingService.badgeCount > 0) {
                     FirebaseMessagingService.badgeCount--;
-                    ShortcutBadger.applyCount(getApplicationContext(),FirebaseMessagingService.badgeCount);
+                    ShortcutBadger.applyCount(getApplicationContext(), FirebaseMessagingService.badgeCount);
                 }
 
             userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());

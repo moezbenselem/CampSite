@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -188,7 +190,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             } else if (type.equals("image")) {
 
 
-                Picasso.with(context).load(m.getMessage()).placeholder(R.drawable.loading).into(holder.messageImage);
+                Picasso.with(context).load(m.getMessage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.loading).into(holder.messageImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(context).load(m.getMessage()).placeholder(R.drawable.loading).into(holder.messageImage);
+                    }
+                });
 
                 holder.messageImage.setVisibility(View.VISIBLE);
                 holder.text.setVisibility(View.GONE);

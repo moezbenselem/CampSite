@@ -21,6 +21,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -153,9 +155,19 @@ public class ImagesFragment extends Fragment implements
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView = new ImageView(mContext);
-            Picasso.with(mContext).load(mThumbIds.get(position)).placeholder(R.drawable.black).into(imageView);
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final ImageView imageView = new ImageView(mContext);
+            Picasso.with(mContext).load(mThumbIds.get(position)).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.black).into(imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+                    Picasso.with(mContext).load(mThumbIds.get(position)).placeholder(R.drawable.black).into(imageView);
+                }
+            });
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new GridView.LayoutParams(320, 320));
             return imageView;

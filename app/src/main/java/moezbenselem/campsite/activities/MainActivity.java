@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         navigation.setSelectedItemId(R.id.navigation_profile);
 
 
-
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null)
             userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getDisplayName());

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -162,7 +163,7 @@ public class VideoFragment extends Fragment implements
 
             //long thumb = getLayoutPosition()*1000;
             RequestOptions options = new RequestOptions().frame(1000);
-            Glide.with(getContext()).load(mThumbIds.get(position)).placeholder(R.drawable.black).apply(options).into(imageView);
+            Glide.with(getContext()).load(mThumbIds.get(position)).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.black).apply(options).into(imageView);
 
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new GridView.LayoutParams(320, 320));

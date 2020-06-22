@@ -47,17 +47,15 @@ public class MessagesFragment extends Fragment {
     ArrayList<Conv> listConv;
     View mainView;
 
-
     Query friendsQuery;
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
-            if(FirebaseMessagingService.badgeCount>0){
-                FirebaseMessagingService.badgeCount=0;
-                ShortcutBadger.applyCount(getActivity().getApplicationContext(),FirebaseMessagingService.badgeCount);
+            if (FirebaseMessagingService.badgeCount > 0) {
+                FirebaseMessagingService.badgeCount = 0;
+                ShortcutBadger.applyCount(getActivity().getApplicationContext(), FirebaseMessagingService.badgeCount);
             }
 
             recyclerView = getView().findViewById(R.id.recycler_friends);
@@ -94,8 +92,6 @@ public class MessagesFragment extends Fragment {
                     if (dataSnapshot.hasChildren()) {
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                            //System.out.println("key " + child.getKey());
 
                             Query userQuery = usersRef.child(child.getKey()).orderByChild("online");
 
@@ -141,52 +137,69 @@ public class MessagesFragment extends Fragment {
             messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(mAuth.getCurrentUser().getDisplayName());
             messageRef.keepSynced(true);
 
-            convRef = FirebaseDatabase.getInstance().getReference().child("Chat").child(mAuth.getCurrentUser().getDisplayName());
-            convRef.keepSynced(true);
 
             listConv = new ArrayList<>();
 
+            convRef = FirebaseDatabase.getInstance().getReference().child("Chat").child(mAuth.getCurrentUser().getDisplayName());
+            convRef.keepSynced(true);
+
+
             //fetch convs
-            convRef.orderByChild("time").addValueEventListener(new ValueEventListener() {
+            convRef.orderByChild("time").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     //fetch last message data for each conv
-                    for (final DataSnapshot conv : dataSnapshot.getChildren()) {
+                    if (dataSnapshot.hasChildren()) {
 
-                        messageRef.child(conv.getKey()).limitToLast(1).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.hasChildren()) {
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        Conv c = data.getValue(Conv.class);
 
-                                        User u = findUser(conv.getKey(), listFriends);
+                        for (final DataSnapshot conv : dataSnapshot.getChildren()) {
 
-                                        c.setUserImage(u.getImage());
-                                        c.setPartner(conv.getKey());
-                                        c.setPartnerGender(u.getGender());
-                                        listConv.add(c);
+                            final DataSnapshot localConv = conv;
 
-                                    }
-                                    try {
-                                        convAdapter = new ConvAdapter(listConv, getContext());
+                            messageRef.child(conv.getKey()).limitToLast(1).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    System.out.println("inside message ref !!!");
+                                    if (dataSnapshot.hasChildren()) {
 
-                                        recyclerConv.setAdapter(convAdapter);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        try {
+
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                Conv c = data.getValue(Conv.class);
+
+                                                User u = findUser(localConv.getKey(), listFriends);
+
+                                                c.setUserImage(u.getImage());
+                                                c.setPartner(localConv.getKey());
+                                                c.setPartnerGender(u.getGender());
+                                                Conv oldConv = findConv(c.getPartner(), listConv);
+                                                if (oldConv != null)
+                                                    listConv.remove(oldConv);
+                                                listConv.add(c);
+                                                //convAdapter.notifyDataSetChanged();
+
+                                            }
+                                            //Toast.makeText(getContext(), "nbr convs : " + listConv.size(), Toast.LENGTH_LONG).show();
+                                            convAdapter = new ConvAdapter(listConv, getContext());
+                                            recyclerConv.setAdapter(convAdapter);
+
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
                                     }
 
                                 }
-                                //System.out.println(conv.getKey()+" last message data : "+dataSnapshot);
 
-                            }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
+
                 }
 
                 @Override
@@ -214,6 +227,14 @@ public class MessagesFragment extends Fragment {
     public User findUser(String userId, ArrayList<User> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getUsername().equalsIgnoreCase(userId))
+                return list.get(i);
+        }
+        return null;
+    }
+
+    public Conv findConv(String partner, ArrayList<Conv> list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getPartner().equals(partner))
                 return list.get(i);
         }
         return null;

@@ -4,9 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
@@ -16,7 +14,6 @@ import java.util.Random;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import moezbenselem.campsite.activities.ChatActivity;
-import moezbenselem.campsite.activities.MainActivity;
 import moezbenselem.campsite.activities.UserActivity;
 
 /**
@@ -26,11 +23,10 @@ import moezbenselem.campsite.activities.UserActivity;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     public static String theSender;
+    public static int badgeCount = 0;
     String image, sender_id, sender_name, action, notif_title, notif_body;
     Bitmap contactPic = null;
     NotificationCompat.Builder mBuilder;
-    public static int badgeCount=0;
-
     int mNotificationId;
     Intent resultIntent;
     PendingIntent resultPendingIntent;
@@ -39,12 +35,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onCreate() {
         super.onCreate();
 
-            mBuilder = new NotificationCompat.Builder(getApplicationContext(), "CAMPSITE");
+        mBuilder = new NotificationCompat.Builder(getApplicationContext(), "CAMPSITE");
 
-            if(badgeCount>=0){
-                ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
-            }else
-                ShortcutBadger.removeCount(getApplicationContext());
+        if (badgeCount >= 0) {
+            ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
+        } else
+            ShortcutBadger.removeCount(getApplicationContext());
 
 
     }
@@ -55,7 +51,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         try {
             badgeCount++;
-            System.out.println("badge count : "+badgeCount);
+            System.out.println("badge count : " + badgeCount);
             ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
             /*notif_title = remoteMessage.getNotification().getTitle();
             notif_body = remoteMessage.getNotification().getBody();

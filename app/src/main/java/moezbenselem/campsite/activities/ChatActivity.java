@@ -61,7 +61,7 @@ import moezbenselem.campsite.entities.Message;
 public class ChatActivity extends AppCompatActivity {
 
     private static final int SELECT_VIDEO = 2;
-    public static int messages_numer = 10, GALLERY_PICK = 1321;
+    public static int messages_numer = 15, GALLERY_PICK = 1321;
     String chatUser, user_name;
     DatabaseReference rootRef, messagesRef;
     StorageReference imageRef;
@@ -91,12 +91,11 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        if(getIntent().getExtras().getString("intent")!=null)
-            if(FirebaseMessagingService.badgeCount>0){
+        if (getIntent().getExtras().getString("intent") != null)
+            if (FirebaseMessagingService.badgeCount > 0) {
                 FirebaseMessagingService.badgeCount--;
-                ShortcutBadger.applyCount(getApplicationContext(),FirebaseMessagingService.badgeCount);
+                ShortcutBadger.applyCount(getApplicationContext(), FirebaseMessagingService.badgeCount);
             }
-
 
 
         try {
@@ -324,6 +323,7 @@ public class ChatActivity extends AppCompatActivity {
                                 recyclerMessages.setAdapter(adapter);
                                 if (fromRefresh) {
                                     swipeRefreshLayout.setRefreshing(false);
+                                    recyclerMessages.scrollToPosition(adapter.getItemCount() / current_page - 1);
                                 } else {
                                     swipeRefreshLayout.setRefreshing(false);
                                     recyclerMessages.scrollToPosition(adapter.getItemCount() - 1);

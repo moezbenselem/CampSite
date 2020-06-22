@@ -65,7 +65,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
 
     private static final int SELECT_VIDEO = 1;
-    public static int messages_numer = 10, GALLERY_PICK = 1321;
+    public static int messages_numer = 15, GALLERY_PICK = 1321;
     String chatUser, user_name;
     DatabaseReference rootRef, messagesRef;
     StorageReference imageRef;
@@ -273,6 +273,7 @@ public class GroupChatActivity extends AppCompatActivity {
                                     recyclerMessages.setAdapter(adapter);
                                     if (fromRefresh) {
                                         swipeRefreshLayout.setRefreshing(false);
+                                        recyclerMessages.scrollToPosition(adapter.getItemCount() / current_page - 1);
                                     } else {
                                         swipeRefreshLayout.setRefreshing(false);
                                         recyclerMessages.scrollToPosition(adapter.getItemCount() - 1);
