@@ -47,6 +47,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import moezbenselem.campsite.R;
 import moezbenselem.campsite.activities.MainActivity;
 import moezbenselem.campsite.activities.ShowMediaActivity;
+import moezbenselem.campsite.activities.UserActivity;
 import moezbenselem.campsite.entities.Message;
 
 /**
@@ -128,7 +129,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
 
     @Override
-    public void onBindViewHolder(final MessageViewHolder holder, int position) {
+    public void onBindViewHolder(final MessageViewHolder holder, final int position) {
 
 
         try {
@@ -137,7 +138,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             width = (int) (width * 0.75);
 
             mAuth = FirebaseAuth.getInstance();
-            String current_user_id = mAuth.getCurrentUser().getDisplayName();
+            final String current_user_id = mAuth.getCurrentUser().getDisplayName();
             final Message m = listMessages.get(position);
 
 
@@ -362,6 +363,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 });
 
 
+            }
+            if (!listMessages.get(position).getFrom().equals(current_user_id)) {
+
+                holder.userImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent toProfile = new Intent(context, UserActivity.class);
+                        toProfile.putExtra("name", listMessages.get(position).getFrom());
+                        context.startActivity(toProfile);
+                    }
+                });
             }
 
 

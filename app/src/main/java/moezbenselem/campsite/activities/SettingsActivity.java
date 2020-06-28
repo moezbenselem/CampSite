@@ -98,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
                         System.out.println("key " + child.getKey());
 
                         Query Query = usersRef.child(child.getKey()).orderByChild("online");
-                        if (child.getKey().toString() == myEventsRef.toString())
+                        if (child.getKey() == myEventsRef.toString())
                             System.out.println("child key " + child.getKey());
 
                         /*userQuery.addListenerForSingleValueEvent(new ValueEventListener() {

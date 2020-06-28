@@ -151,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
                 this.startService(trackIntent);
                 System.out.println("service started from Track fragment");
             }
+            if (getIntent().getExtras().getString("eventId") != null) {
+                NotificationFragment notificationFragment = new NotificationFragment();
+                Bundle arguments = new Bundle();
+                arguments.putString("eventId", getIntent().getExtras().getString("eventId"));
+                notificationFragment.setArguments(arguments);
+                fragmentManager.beginTransaction().replace(R.id.content, notificationFragment)
+                        .addToBackStack(null).commit();
+            }
         } catch (Exception e) {
             e.printStackTrace();
 

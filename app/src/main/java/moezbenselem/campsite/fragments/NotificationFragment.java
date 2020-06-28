@@ -1,6 +1,7 @@
 package moezbenselem.campsite.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ import moezbenselem.campsite.FirebaseMessagingService;
 import moezbenselem.campsite.Notification;
 import moezbenselem.campsite.R;
 import moezbenselem.campsite.activities.UserActivity;
+import moezbenselem.campsite.dialogs.EventDialog;
+import moezbenselem.campsite.entities.Event;
 
 
 /**
@@ -39,6 +42,7 @@ import moezbenselem.campsite.activities.UserActivity;
  */
 public class NotificationFragment extends Fragment {
 
+    static Bundle arguments;
     View mainView;
     DatabaseReference notifRef;
     RecyclerView recyclerNotif;
@@ -50,6 +54,9 @@ public class NotificationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         try {
+
+            if (getArguments() != null)
+                arguments = getArguments();
 
             if (FirebaseMessagingService.badgeCount > 0) {
                 FirebaseMessagingService.badgeCount = 0;
@@ -149,7 +156,7 @@ public class NotificationFragment extends Fragment {
 
         }
 
-        public void setBody(String type, final String from, String time, final Context cnx, String image) {
+        public void setBody(final String type, final String from, String time, final Context cnx, String image) {
 
             try {
                 TextView bodyView = this.mView.findViewById(R.id.item_body);
@@ -182,6 +189,40 @@ public class NotificationFragment extends Fragment {
                         }
                     });
 
+                } else {
+                    bodyView.setText("has sent you an Event invitation !");
+                    System.out.println("image notif : " + image);
+                    Picasso.with(cnx).load(image).networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.drawable.request).into((CircleImageView) this.mView.findViewById(R.id.item_image), new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            System.out.println("notif pic loaded !");
+                        }
+
+                        @Override
+                        public void onError() {
+                        }
+                    });
+
+                    mView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            FirebaseDatabase.getInstance().getReference().child("Events").child(type).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Event event = dataSnapshot.getValue(Event.class);
+                                    event.setId(dataSnapshot.getKey());
+                                    new EventDialog((Activity) cnx, event).show();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    });
                 }
 
             } catch (Exception e) {

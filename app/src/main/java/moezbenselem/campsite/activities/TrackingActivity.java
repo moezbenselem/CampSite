@@ -164,7 +164,7 @@ public class TrackingActivity extends AppCompatActivity implements PermissionsLi
 
                                                 for (DataSnapshot user : dataSnapshot.getChildren()) {
                                                     if (user.getKey() != mAuth.getCurrentUser().getDisplayName())
-                                                        listMembers.add(user.getKey().toString());
+                                                        listMembers.add(user.getKey());
                                                 }
                                                 for (final String memberId : listMembers) {
                                                     FriendTrackRef.child(memberId).child("data").limitToLast(1).addValueEventListener(new ValueEventListener() {

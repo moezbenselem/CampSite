@@ -14,6 +14,7 @@ import java.util.Random;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import moezbenselem.campsite.activities.ChatActivity;
+import moezbenselem.campsite.activities.MainActivity;
 import moezbenselem.campsite.activities.UserActivity;
 
 /**
@@ -24,7 +25,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     public static String theSender;
     public static int badgeCount = 0;
-    String image, sender_id, sender_name, action, notif_title, notif_body;
+    String image, sender_id, sender_name, action, notif_title, notif_body, event_id;
     Bitmap contactPic = null;
     NotificationCompat.Builder mBuilder;
     int mNotificationId;
@@ -50,9 +51,9 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         super.onMessageReceived(remoteMessage);
 
         try {
-            badgeCount++;
+            //badgeCount++;
             System.out.println("badge count : " + badgeCount);
-            ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
+            ShortcutBadger.applyCount(getApplicationContext(), 0);
             /*notif_title = remoteMessage.getNotification().getTitle();
             notif_body = remoteMessage.getNotification().getBody();
             action = remoteMessage.getNotification().getClickAction();
@@ -67,13 +68,32 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             sender_id = remoteMessage.getData().get("sender_id");
             sender_name = remoteMessage.getData().get("sender_name");
 
+            System.out.println(notif_title);
+            System.out.println(notif_body);
+            System.out.println(action);
 
             theSender = sender_name;
             /*System.out.println("notif the sender id = " + sender_id);
             System.out.println("notif the sender name = " + sender_name);*/
 
+            if (remoteMessage.getData().get("event_id") != null) {
+                event_id = remoteMessage.getData().get("event_id");
+                System.out.println(event_id);
+                resultIntent = new Intent(this, MainActivity.class);
+                resultIntent.putExtra("uid", sender_id);
+                resultIntent.putExtra("name", sender_name);
+                resultIntent.putExtra("intent", "notification");
+                resultIntent.putExtra("eventId", event_id);
+                resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            if (image.equalsIgnoreCase("request")) {
+
+                resultPendingIntent = PendingIntent.getActivity(
+                        getApplicationContext(),
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_CANCEL_CURRENT
+                );
+            } else if (image.equalsIgnoreCase("request")) {
 
                 resultIntent = new Intent(this, UserActivity.class);
                 resultIntent.putExtra("uid", sender_id);

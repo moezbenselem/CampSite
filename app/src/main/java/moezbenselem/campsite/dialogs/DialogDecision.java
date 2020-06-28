@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import moezbenselem.campsite.R;
 import moezbenselem.campsite.activities.GroupChatActivity;
+import moezbenselem.campsite.activities.InviteActivity;
 import moezbenselem.campsite.entities.Event;
 
 public class DialogDecision extends Dialog implements
@@ -88,6 +89,11 @@ public class DialogDecision extends Dialog implements
                 chatIntent.putExtra("locationLon", event.getLon());
                 getContext().startActivity(chatIntent);
                 break;
+            case R.id.btn_invite:
+                Intent inviteIntent = new Intent(getContext(), InviteActivity.class);
+                inviteIntent.putExtra("event_id", event.getId());
+                inviteIntent.putExtra("event_name", event.getName());
+                getContext().startActivity(inviteIntent);
 
             default:
                 break;

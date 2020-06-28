@@ -182,7 +182,6 @@ public class TrackService extends Service {
                                     System.out.println("ERROR FIREBASE FROM SERVICE");
                             }
                         });
-                        ;
 
                     }
 
