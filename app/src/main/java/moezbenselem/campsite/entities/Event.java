@@ -7,19 +7,38 @@ package moezbenselem.campsite.entities;
 public class Event {
 
     String id, location, date, topic, name, time, admin;
+    Double lon, lat;
+
 
     public Event() {
     }
 
-
-    public Event(String id, String place, String date, String topic, String name, String time, String admin) {
+    public Event(String id, String location, String date, String topic, String name, String time, String admin, Double lon, Double lat) {
         this.id = id;
-        this.location = place;
+        this.location = location;
         this.date = date;
         this.topic = topic;
         this.name = name;
         this.time = time;
         this.admin = admin;
+        this.lon = lon;
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
     }
 
     public String getId() {
@@ -77,4 +96,6 @@ public class Event {
     public void setAdmin(String admin) {
         this.admin = admin;
     }
+
+
 }

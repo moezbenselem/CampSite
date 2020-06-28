@@ -83,6 +83,9 @@ public class DialogDecision extends Dialog implements
 
                 chatIntent.putExtra("uid", event.getId());
                 chatIntent.putExtra("name", event.getName());
+                chatIntent.putExtra("locationName", event.getLocation());
+                chatIntent.putExtra("locationLat", event.getLat());
+                chatIntent.putExtra("locationLon", event.getLon());
                 getContext().startActivity(chatIntent);
                 break;
 

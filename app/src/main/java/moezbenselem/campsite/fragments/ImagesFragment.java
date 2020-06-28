@@ -2,6 +2,7 @@ package moezbenselem.campsite.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -38,10 +39,11 @@ public class ImagesFragment extends Fragment implements
     private static final ArrayList<Uri> listUrl = new ArrayList<>();
     private static final ArrayList<String> listNames = new ArrayList<>();
     String eventId, eventName;
+    int height, width;
     private ImageView selection;
 
     public ImagesFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -168,8 +170,11 @@ public class ImagesFragment extends Fragment implements
                     Picasso.with(mContext).load(mThumbIds.get(position)).placeholder(R.drawable.black).into(imageView);
                 }
             });
+            width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            width = (int) ((width / 2 - (width * 0.02)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setLayoutParams(new GridView.LayoutParams(320, 320));
+            imageView.setLayoutParams(new GridView.LayoutParams(width, width));
+            System.out.println("width : " + width);
             return imageView;
         }
 

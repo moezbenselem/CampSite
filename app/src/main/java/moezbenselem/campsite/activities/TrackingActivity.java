@@ -3,6 +3,7 @@ package moezbenselem.campsite.activities;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +21,10 @@ import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -47,6 +51,10 @@ public class TrackingActivity extends AppCompatActivity implements PermissionsLi
     DatabaseReference FriendTrackRef, MembersRef;
     String eventId, eventName;
     ArrayList<String> listMembers;
+    String locationName;
+    Cord locationCord;
+    CameraPosition currentPosition;
+    Button btMyLocation, btEventLocation;
     private MapView mapView;
     private PermissionsManager permissionsManager;
     private List<Point> routeCoordinates;
@@ -92,6 +100,10 @@ public class TrackingActivity extends AppCompatActivity implements PermissionsLi
 
 
         listMembers = new ArrayList<>();
+
+        btMyLocation = findViewById(R.id.btn_mylocation);
+        btEventLocation = findViewById(R.id.btn_event_location);
+
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(@NonNull MapboxMap mapboxMap) {
@@ -101,8 +113,44 @@ public class TrackingActivity extends AppCompatActivity implements PermissionsLi
                             @Override
                             public void onStyleLoaded(@NonNull final Style style) {
                                 enableLocationComponent(style);
-
+                                currentPosition = myMapboxMap.getCameraPosition();
                                 mAuth = FirebaseAuth.getInstance();
+                                try {
+                                    //System.out.println("lon : "+GroupChatActivity.locationLon+" lat : "+GroupChatActivity.locationLat);
+                                    IconFactory iconFactory = IconFactory.getInstance(TrackingActivity.this);
+                                    MarkerOptions markerOptions = new MarkerOptions()
+                                            .position(new LatLng(GroupChatActivity.locationLat, GroupChatActivity.locationLon))
+                                            .title(GroupChatActivity.locationName)
+                                            .snippet("Event Location")
+                                            .icon(iconFactory.fromResource(R.drawable.event_location));
+
+                                    myMapboxMap.addMarker(markerOptions);
+
+
+                                    btMyLocation.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            myMapboxMap.animateCamera(CameraUpdateFactory
+                                                    .newCameraPosition(currentPosition), 7000);
+                                        }
+                                    });
+
+
+                                    btEventLocation.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            CameraPosition position = new CameraPosition.Builder()
+                                                    .target(new LatLng(GroupChatActivity.locationLat, GroupChatActivity.locationLon)) // Sets the new camera position
+                                                    .build(); // Creates a CameraPosition from the builder
+
+                                            myMapboxMap.animateCamera(CameraUpdateFactory
+                                                    .newCameraPosition(position), 7000);
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
 
                                 FriendTrackRef = FirebaseDatabase.getInstance().getReference().child("Tracking");
 
@@ -228,7 +276,9 @@ public class TrackingActivity extends AppCompatActivity implements PermissionsLi
 
 
         });
+
     }
+
 
     @SuppressWarnings({"MissingPermission"})
     public void enableLocationComponent(@NonNull Style loadedMapStyle) {
@@ -255,6 +305,7 @@ public class TrackingActivity extends AppCompatActivity implements PermissionsLi
             permissionsManager.requestLocationPermissions(this);
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

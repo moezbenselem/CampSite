@@ -18,6 +18,9 @@
         android:roundIcon="@drawable/camp_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.LocationActivity"
+            android:label="Event Location" />
         <activity android:name=".activities.ShowMediaActivity" />
         <activity
             android:name=".activities.AlbumsActivity"

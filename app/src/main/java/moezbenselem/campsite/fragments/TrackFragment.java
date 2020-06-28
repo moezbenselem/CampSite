@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +54,7 @@ public class TrackFragment extends Fragment implements PermissionsListener {
 
     private static final String MAP_TOKEN = "sk.eyJ1IjoiYmVuc2VsZW1tb2V6IiwiYSI6ImNrOHp1cXdrMTB2MHozZnM3aTk3dDl5MDQifQ.eOyRaWad8d8b2Bmm5sEPEw";
     public MapboxMap myMapboxMap;
+    Button btReset;
     FirebaseAuth mAuth;
     DatabaseReference FriendTrackRef;
     private MapView mapView;
@@ -76,6 +79,8 @@ public class TrackFragment extends Fragment implements PermissionsListener {
         }
         try {
             view = inflater.inflate(R.layout.fragment_map, container, false);
+            mAuth = FirebaseAuth.getInstance();
+            FriendTrackRef = FirebaseDatabase.getInstance().getReference().child("Tracking").child(mAuth.getCurrentUser().getDisplayName());
 
 
             mapView = view.findViewById(R.id.mapView);
@@ -91,9 +96,6 @@ public class TrackFragment extends Fragment implements PermissionsListener {
                                 public void onStyleLoaded(@NonNull final Style style) {
                                     enableLocationComponent(style);
                                     //initRouteCoordinates();
-
-                                    mAuth = FirebaseAuth.getInstance();
-                                    FriendTrackRef = FirebaseDatabase.getInstance().getReference().child("Tracking").child(mAuth.getCurrentUser().getDisplayName());
                                     FriendTrackRef.child("data").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -120,7 +122,7 @@ public class TrackFragment extends Fragment implements PermissionsListener {
 // The layer properties for our line. This is where we make the line dotted, set the
 // color, etc.
                                                 style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
-                                                        PropertyFactory.lineDasharray(new Float[]{0.01f, 2f}),
+                                                        PropertyFactory.lineDasharray(new Float[]{0.01f, 5f}),
                                                         PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
                                                         PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
                                                         PropertyFactory.lineWidth(5f),
@@ -142,6 +144,20 @@ public class TrackFragment extends Fragment implements PermissionsListener {
 
 
             });
+
+            btReset = view.findViewById(R.id.bt_reset_gps);
+            btReset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FriendTrackRef.child("data").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getContext(), "Data Cleared !", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

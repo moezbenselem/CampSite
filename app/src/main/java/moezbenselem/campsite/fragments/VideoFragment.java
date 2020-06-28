@@ -2,6 +2,7 @@ package moezbenselem.campsite.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class VideoFragment extends Fragment implements
     private static final ArrayList<Uri> listUrl = new ArrayList<>();
     private static final ArrayList<String> listNames = new ArrayList<>();
     String eventId, eventName;
+    int height, width;
     private ImageView selection;
 
     public VideoFragment() {
@@ -164,9 +166,10 @@ public class VideoFragment extends Fragment implements
             //long thumb = getLayoutPosition()*1000;
             RequestOptions options = new RequestOptions().frame(1000);
             Glide.with(getContext()).load(mThumbIds.get(position)).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.black).apply(options).into(imageView);
-
+            width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            width = (int) ((width / 2 - (width * 0.02)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setLayoutParams(new GridView.LayoutParams(320, 320));
+            imageView.setLayoutParams(new GridView.LayoutParams(width, width));
             return imageView;
         }
 

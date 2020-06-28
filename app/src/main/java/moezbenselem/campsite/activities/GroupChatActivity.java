@@ -66,11 +66,13 @@ public class GroupChatActivity extends AppCompatActivity {
 
     private static final int SELECT_VIDEO = 1;
     public static int messages_numer = 15, GALLERY_PICK = 1321;
+    public static String locationName = "";
+    public static Double locationLon;
+    public static Double locationLat;
     String chatUser, user_name;
     DatabaseReference rootRef, messagesRef;
     StorageReference imageRef;
     StorageReference videoRef;
-
     TextView tvOnline;
     EditText etMessage;
     Button btSend, btImage, btVideo;
@@ -121,6 +123,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
             chatUser = getIntent().getStringExtra("uid");
             user_name = getIntent().getStringExtra("name");
+
 
             if (chatUser == null) {
                 chatUser = FirebaseMessagingService.theSender;
@@ -232,6 +235,9 @@ public class GroupChatActivity extends AppCompatActivity {
 
                 }
             });
+            locationName = getIntent().getStringExtra("locationName");
+            locationLat = getIntent().getExtras().getDouble("locationLat");
+            locationLon = getIntent().getExtras().getDouble("locationLon");
 
 
         } catch (Exception e) {

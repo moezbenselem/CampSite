@@ -2,11 +2,13 @@ package moezbenselem.campsite.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -131,6 +133,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         try {
 
+            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            width = (int) (width * 0.75);
+
             mAuth = FirebaseAuth.getInstance();
             String current_user_id = mAuth.getCurrentUser().getDisplayName();
             final Message m = listMessages.get(position);
@@ -203,6 +208,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 });
 
                 holder.messageImage.setVisibility(View.VISIBLE);
+
+                System.out.println("width : " + width);
+                holder.messageImage.setLayoutParams(new LinearLayout.LayoutParams(width, width));
                 holder.text.setVisibility(View.GONE);
                 holder.messageImage.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -225,7 +233,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 mPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(context),
                         new DefaultTrackSelector());
 
-
+                holder.messageVideo.setLayoutParams(new LinearLayout.LayoutParams(width, width));
                 holder.messageVideo.setPlayer(mPlayer);
 
                 DefaultDataSourceFactory dataSourceFactory =

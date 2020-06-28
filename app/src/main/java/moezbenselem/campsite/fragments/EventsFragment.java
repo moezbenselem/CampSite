@@ -1,8 +1,10 @@
 package moezbenselem.campsite.fragments;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -35,7 +37,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import moezbenselem.campsite.R;
+import moezbenselem.campsite.activities.LocationActivity;
 import moezbenselem.campsite.dialogs.EventDialog;
+import moezbenselem.campsite.entities.Cord;
 import moezbenselem.campsite.entities.Event;
 
 
@@ -44,6 +48,9 @@ import moezbenselem.campsite.entities.Event;
  */
 public class EventsFragment extends Fragment {
 
+    public static String locationName = "";
+    public static Cord locationCord;
+    public static int ACTIVITY_LOCATION_ID = 1248;
     EditText etDate, etTime, etLoc, etTopic, etEvent;
     String dateF = "", dateD = "", timeD = "", timeF = "", dateFinal = "";
     FirebaseAuth mAuth;
@@ -55,7 +62,7 @@ public class EventsFragment extends Fragment {
     CardView card_new;
     RelativeLayout layoutContenu;
     LinearLayout layoutHeader;
-    Button btDate, btTime, btEffectuer, btPlus, btAnnuler;
+    Button btDate, btTime, btEffectuer, btPlus, btAnnuler, btLoc;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -81,7 +88,7 @@ public class EventsFragment extends Fragment {
             etEvent = card_new.findViewById(R.id.etEvent);
             etTopic = card_new.findViewById(R.id.etTopic);
             etLoc = card_new.findViewById(R.id.etLoc);
-
+            btLoc = card_new.findViewById(R.id.btLoc);
             card_new.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -160,6 +167,14 @@ public class EventsFragment extends Fragment {
                 }
             });
 
+            btLoc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent toLocation = new Intent(EventsFragment.this.getActivity(), LocationActivity.class);
+                    startActivityForResult(toLocation, ACTIVITY_LOCATION_ID);
+                }
+            });
+
         } catch (Exception exp) {
             exp.printStackTrace();
         }
@@ -191,7 +206,7 @@ public class EventsFragment extends Fragment {
         time = etTime.getText().toString();
         admin = mAuth.getCurrentUser().getDisplayName();
 
-        HashMap<String, String> eventMap = new HashMap();
+        HashMap<String, Object> eventMap = new HashMap();
 
         eventMap.put("location", place);
         eventMap.put("date", date);
@@ -199,6 +214,8 @@ public class EventsFragment extends Fragment {
         eventMap.put("topic", topic);
         eventMap.put("name", name);
         eventMap.put("admin", admin);
+        eventMap.put("lat", locationCord.getLat());
+        eventMap.put("lon", locationCord.getLon());
 
         String id = mDataBase.push().getKey();
 
@@ -260,6 +277,15 @@ public class EventsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACTIVITY_LOCATION_ID)
+            if (resultCode == Activity.RESULT_OK) {
+                etLoc.setText(locationName);
+            }
+    }
+
     public static class eventsViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
@@ -278,6 +304,4 @@ public class EventsFragment extends Fragment {
         }
 
     }
-
-
 }

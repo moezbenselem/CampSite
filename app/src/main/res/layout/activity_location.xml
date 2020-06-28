@@ -4,35 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.TrackingActivity">
+    tools:context=".activities.LocationActivity">
 
     <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapView_activity"
+        android:id="@+id/mapViewLocation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        mapbox:mapbox_cameraZoom="15" />
 
-        mapbox:mapbox_cameraZoom="15"
-
-
-        />
 
     <Button
-        android:id="@+id/btn_mylocation"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:id="@+id/btn_save_cord"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_margin="10dp"
-        android:background="@drawable/map_ico"
+        android:background="@drawable/check"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/btn_event_location"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/event_location"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintTop_toBottomOf="@+id/btn_mylocation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

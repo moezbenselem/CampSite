@@ -81,15 +81,29 @@
                 android:textAlignment="textStart" />
 
 
-            <EditText
-                android:id="@+id/etLoc"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Event Location"
-                android:inputType="textPersonName"
-                android:paddingBottom="10dp"
-                android:textAlignment="textStart" />
+                android:orientation="horizontal"
+                android:weightSum="5">
 
+                <EditText
+                    android:id="@+id/etLoc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:hint="Event Location"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="textStart" />
+
+                <Button
+                    android:id="@+id/btLoc"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gps_now" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
