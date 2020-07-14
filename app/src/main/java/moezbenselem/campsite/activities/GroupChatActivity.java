@@ -49,8 +49,11 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,6 +61,7 @@ import id.zelory.compressor.Compressor;
 import moezbenselem.campsite.FirebaseMessagingService;
 import moezbenselem.campsite.R;
 import moezbenselem.campsite.adapters.MessageAdapter;
+import moezbenselem.campsite.entities.Event;
 import moezbenselem.campsite.entities.Message;
 import moezbenselem.campsite.entities.User;
 
@@ -581,12 +585,40 @@ public class GroupChatActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_gps) {
+            rootRef.child("Events").child(chatUser).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        Event e = dataSnapshot.getValue(Event.class);
 
-            Intent toTrack = new Intent(this, TrackingActivity.class);
-            toTrack.putExtra("eventId", chatUser);
-            toTrack.putExtra("eventName", user_name);
-            //System.out.println("event to track : " + chatUser);
-            this.startActivity(toTrack);
+                        SimpleDateFormat df = new SimpleDateFormat("EEEE dd-MM-yyyy", Locale.US);
+                        String today = df.format(new Date().getTime());
+
+                        Date dateEvent = df.parse(e.getDate());
+                        Date dateNow = df.parse(today);
+
+                        System.out.println("today : " + df.format(dateNow) + " event : " + df.format(dateEvent));
+
+                        if (dateNow.compareTo(dateEvent) >= 0) {
+                            Intent toTrack = new Intent(getApplicationContext(), TrackingActivity.class);
+                            toTrack.putExtra("eventId", chatUser);
+                            toTrack.putExtra("eventName", user_name);
+                            //System.out.println("event to track : " + chatUser);
+                            GroupChatActivity.this.startActivity(toTrack);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "This Event didn't start yet !", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
             return true;
         } else if (item.getItemId() == R.id.action_album) {
 

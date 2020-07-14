@@ -110,8 +110,8 @@ public class TrackService extends Service {
             };
 
             loc = locationManager.getLastKnownLocation(provider);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000,
-                    500, mLocationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000,
+                    10, mLocationListener);
 
             mAuth = FirebaseAuth.getInstance();
             myTrackRef = FirebaseDatabase.getInstance().getReference().child("Tracking").child(mAuth.getCurrentUser().getDisplayName());

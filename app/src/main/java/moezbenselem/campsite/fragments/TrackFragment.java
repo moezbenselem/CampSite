@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -122,7 +121,7 @@ public class TrackFragment extends Fragment implements PermissionsListener {
 // The layer properties for our line. This is where we make the line dotted, set the
 // color, etc.
                                                 style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
-                                                        PropertyFactory.lineDasharray(new Float[]{0.01f, 5f}),
+                                                        PropertyFactory.lineDasharray(new Float[]{0.01f, 1f}),
                                                         PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
                                                         PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
                                                         PropertyFactory.lineWidth(5f),
@@ -145,8 +144,8 @@ public class TrackFragment extends Fragment implements PermissionsListener {
 
             });
 
-            btReset = view.findViewById(R.id.bt_reset_gps);
-            btReset.setOnClickListener(new View.OnClickListener() {
+
+            /*btReset.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     FriendTrackRef.child("data").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -156,7 +155,7 @@ public class TrackFragment extends Fragment implements PermissionsListener {
                         }
                     });
                 }
-            });
+            });*/
 
         } catch (Exception e) {
             e.printStackTrace();
