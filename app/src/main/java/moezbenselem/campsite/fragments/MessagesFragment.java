@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import moezbenselem.campsite.FirebaseMessagingService;
 import moezbenselem.campsite.R;
+import moezbenselem.campsite.activities.ChatActivity;
 import moezbenselem.campsite.adapters.ConvAdapter;
 import moezbenselem.campsite.adapters.FriendsAdapter;
 import moezbenselem.campsite.entities.Conv;
@@ -53,10 +54,8 @@ public class MessagesFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
-            if (FirebaseMessagingService.badgeCount > 0) {
-                FirebaseMessagingService.badgeCount = 0;
-                ShortcutBadger.applyCount(getActivity().getApplicationContext(), FirebaseMessagingService.badgeCount);
-            }
+
+            ChatActivity.active_chat_user = "all";
 
             recyclerView = getView().findViewById(R.id.recycler_friends);
             recyclerConv = getView().findViewById(R.id.recycler_discu);
@@ -240,4 +239,21 @@ public class MessagesFragment extends Fragment {
         return null;
     }
 
+    @Override
+    public void onPause() {
+        ChatActivity.active_chat_user = null;
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        ChatActivity.active_chat_user = "all";
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        ChatActivity.active_chat_user = null;
+        super.onDestroy();
+    }
 }

@@ -62,6 +62,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private static final int SELECT_VIDEO = 2;
     public static int messages_numer = 15, GALLERY_PICK = 1321;
+    public static String active_chat_user = null;
     String chatUser, user_name;
     DatabaseReference rootRef, messagesRef;
     StorageReference imageRef;
@@ -131,6 +132,8 @@ public class ChatActivity extends AppCompatActivity {
 
             chatUser = getIntent().getStringExtra("name");
             user_name = getIntent().getStringExtra("name");
+
+            active_chat_user = chatUser;
 
             if (chatUser == null) {
                 chatUser = FirebaseMessagingService.theSender;
@@ -637,15 +640,22 @@ public class ChatActivity extends AppCompatActivity {
     }
 */
 
+    @Override
+    protected void onResume() {
+        active_chat_user = chatUser;
+        super.onResume();
+    }
 
     @Override
     protected void onPause() {
         //release();
+        active_chat_user = null;
         super.onPause();
     }
 
     @Override
     public void onBackPressed() {
+        active_chat_user = null;
         onSupportNavigateUp();
         //this.finish();
     }
@@ -656,6 +666,12 @@ public class ChatActivity extends AppCompatActivity {
             MainActivity.player.release();
         finish();
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        active_chat_user = null;
+        super.onDestroy();
     }
 }
 
