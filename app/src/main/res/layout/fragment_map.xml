@@ -15,13 +15,24 @@
 
 
     <Button
-        android:id="@+id/bt_reset_gps"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:id="@+id/btn_mylocation"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_margin="10dp"
-        android:background="@drawable/update"
+        android:background="@drawable/map_ico"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/btn_event_location"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/event_location"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintTop_toBottomOf="@+id/btn_mylocation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout><!--        mapbox:mapbox_cameraTargetLat="36.7298"-->
     <!--        mapbox:mapbox_cameraTargetLng="10.16580"-->

@@ -36,8 +36,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static HashMap<String, Boolean> resultEvents = new HashMap();
     RecyclerView recyclerEvents;
     FirebaseAuth mAuth;
-    ArrayList<Event> listEvents;
-    DatabaseReference eventsRef, myEventsRef, usersRef;
+    ArrayList<Event> listEvents = new ArrayList<>();
+    DatabaseReference eventsRef, myEventsRef,groupChatRef, usersRef,settingsRef;
     EventsAdapterSettings adapter;
     RadioGroup radioGroup;
     RadioButton radioAll, radioNone, radioCustom;
@@ -49,10 +49,53 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
 
+        mAuth = FirebaseAuth.getInstance();
+
         radioAll = findViewById(R.id.radioAll);
         radioNone = findViewById(R.id.radioNobody);
         radioCustom = findViewById(R.id.radioCustom);
         radioGroup = findViewById(R.id.radioGroup);
+
+        adapter = new EventsAdapterSettings(listEvents, resultEvents, SettingsActivity.this);
+
+        settingsRef = FirebaseDatabase.getInstance().getReference().child("Tracking").child(mAuth.getCurrentUser().getDisplayName()).child("settings");
+
+        settingsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try{
+                    if(dataSnapshot.child("allowed").getValue() != null){
+                        String data = dataSnapshot.child("allowed").getValue().toString();
+                        if(data.equalsIgnoreCase("none"))
+                            radioNone.setChecked(true);
+                        else if(data.equalsIgnoreCase("custom"))
+                            radioCustom.setChecked(true);
+                        else
+                            radioAll.setChecked(true);
+                    }else{
+                        HashMap m = new HashMap<String, Object>();
+                        m.put("allowed","all");
+                        settingsRef.updateChildren(m).addOnSuccessListener(new OnSuccessListener() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                }catch (Exception e){
+
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -77,8 +120,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         recyclerEvents.setLayoutManager(layoutManager);
 
-        mAuth = FirebaseAuth.getInstance();
         myEventsRef = FirebaseDatabase.getInstance().getReference().child("My_Events").child(mAuth.getCurrentUser().getDisplayName()).getRef();
+
+        groupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChat");
 
         eventsRef = FirebaseDatabase.getInstance().getReference().child("Events");
 
@@ -109,19 +153,26 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-
+        final HashMap<String,Object> mapAllowed = new HashMap<>();
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mapAllowed.clear();
                 if (radioAll.isChecked()) {
                     for (HashMap.Entry<String, Boolean> entry : resultEvents.entrySet()) {
                         resultEvents.put(entry.getKey(), true);
                     }
+                    mapAllowed.put("allowed","all");
+                    settingsRef.updateChildren(mapAllowed);
                 } else if (radioNone.isChecked()) {
                     for (HashMap.Entry<String, Boolean> entry : resultEvents.entrySet()) {
                         resultEvents.put(entry.getKey(), false);
                     }
+                    mapAllowed.put("allowed","none");
+                    settingsRef.updateChildren(mapAllowed);
+                }else if (radioCustom.isChecked()){
+                    mapAllowed.put("allowed","Custom");
+                    settingsRef.updateChildren(mapAllowed);
                 }
 
                 HashMap<String, Object> map = new HashMap<>();
@@ -131,12 +182,26 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         btSave.setClickable(true);
-                        if (task.isSuccessful())
-                            Toast.makeText(getApplicationContext(), "Changes Saved !", Toast.LENGTH_SHORT).show();
-                        else
+                        HashMap<String,Object> valueMap = new HashMap();
+                        if (task.isSuccessful()){
+                            //updating in GroupChat
+                            for (HashMap.Entry<String, Boolean> entry : resultEvents.entrySet()) {
+                                valueMap.clear();
+                                valueMap.put(mAuth.getCurrentUser().getDisplayName(),entry.getValue());
+                                groupChatRef.child(entry.getKey()).child("members").updateChildren(valueMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(getApplicationContext(), "Changes Saved !", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }else
                             Toast.makeText(getApplicationContext(), "Failed to Save Changes !", Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }
         });
 
@@ -148,7 +213,7 @@ public class SettingsActivity extends AppCompatActivity {
                     for (DataSnapshot event : dataSnapshot.getChildren()) {
                         resultEvents.put(event.getKey(), event.getValue().equals(true));
                     }
-                    listEvents = new ArrayList<>();
+                    listEvents.clear();
                     eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -161,7 +226,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     if (resultEvents.containsKey(event.getKey()))
                                         listEvents.add(e);
                                 }
-                                adapter = new EventsAdapterSettings(listEvents, resultEvents, SettingsActivity.this);
+
                                 recyclerEvents.setAdapter(adapter);
                             }
                         }
@@ -180,34 +245,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-
-        eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.hasChildren()) {
-
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                        System.out.println("key " + child.getKey());
-
-                        Query Query = usersRef.child(child.getKey()).orderByChild("online");
-                        if (child.getKey() == myEventsRef.toString())
-                            System.out.println("child key " + child.getKey());
-
-                    }
-
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
 
     }
 

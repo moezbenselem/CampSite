@@ -26,6 +26,9 @@ import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -43,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import moezbenselem.campsite.R;
+import moezbenselem.campsite.activities.GroupChatActivity;
 import moezbenselem.campsite.entities.Cord;
 
 
@@ -53,10 +57,11 @@ public class TrackFragment extends Fragment implements PermissionsListener {
 
     private static final String MAP_TOKEN = "sk.eyJ1IjoiYmVuc2VsZW1tb2V6IiwiYSI6ImNrOHp1cXdrMTB2MHozZnM3aTk3dDl5MDQifQ.eOyRaWad8d8b2Bmm5sEPEw";
     public MapboxMap myMapboxMap;
-    Button btReset;
+    Button btMyLocation, btEventLocation;
     FirebaseAuth mAuth;
     DatabaseReference FriendTrackRef;
     private MapView mapView;
+    CameraPosition currentPosition;
     private PermissionsManager permissionsManager;
     private List<Point> routeCoordinates;
 
@@ -80,7 +85,8 @@ public class TrackFragment extends Fragment implements PermissionsListener {
             view = inflater.inflate(R.layout.fragment_map, container, false);
             mAuth = FirebaseAuth.getInstance();
             FriendTrackRef = FirebaseDatabase.getInstance().getReference().child("Tracking").child(mAuth.getCurrentUser().getDisplayName());
-
+            btMyLocation = view.findViewById(R.id.btn_mylocation);
+            btEventLocation = view.findViewById(R.id.btn_event_location);
 
             mapView = view.findViewById(R.id.mapView);
             mapView.onCreate(savedInstanceState);
@@ -94,6 +100,7 @@ public class TrackFragment extends Fragment implements PermissionsListener {
                                 @Override
                                 public void onStyleLoaded(@NonNull final Style style) {
                                     enableLocationComponent(style);
+
                                     //initRouteCoordinates();
                                     FriendTrackRef.child("data").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -127,6 +134,15 @@ public class TrackFragment extends Fragment implements PermissionsListener {
                                                         PropertyFactory.lineWidth(5f),
                                                         PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
                                                 ));
+
+                                                btMyLocation.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        currentPosition = myMapboxMap.getCameraPosition();
+                                                        myMapboxMap.getLocationComponent().setCameraMode(CameraMode.TRACKING);
+                                                    }
+                                                });
+
                                             }
                                         }
 
@@ -143,19 +159,6 @@ public class TrackFragment extends Fragment implements PermissionsListener {
 
 
             });
-
-
-            /*btReset.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FriendTrackRef.child("data").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(), "Data Cleared !", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            });*/
 
         } catch (Exception e) {
             e.printStackTrace();
