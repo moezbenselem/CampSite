@@ -229,24 +229,6 @@ public class NotificationFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-
-        /*public void setUserOnline(String online_status) {
-            try {
-
-
-                ImageView userOnlineView = (ImageView) this.mView.findViewById(R.id.online_icon);
-                if (online_status.equals("true")) {
-                    userOnlineView.setVisibility(View.VISIBLE);
-                } else {
-                    userOnlineView.setVisibility(View.INVISIBLE);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }*/
-
-
     }
 
 

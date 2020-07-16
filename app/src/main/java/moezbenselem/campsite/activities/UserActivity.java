@@ -165,17 +165,26 @@ public class UserActivity extends AppCompatActivity {
                     friendsDatabaseRef.child(currentUser.getDisplayName()).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            progressDialog.show();
-                            if (dataSnapshot.hasChild(name)) {
+                            try {
+                                progressDialog.show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                if (dataSnapshot.hasChild(name)) {
 
-                                btRequest.setEnabled(true);
-                                friends_state = "friends";
-                                System.out.println("this is a friend!");
-                                btDecline.setVisibility(View.INVISIBLE);
-                                btRequest.setText("Unfriend " + name);
-                                progressDialog.dismiss();
-                            } else
-                                progressDialog.dismiss();
+                                    btRequest.setEnabled(true);
+                                    friends_state = "friends";
+                                    System.out.println("this is a friend!");
+                                    btDecline.setVisibility(View.INVISIBLE);
+                                    btRequest.setText("Unfriend " + name);
+                                    progressDialog.dismiss();
+                                } else
+                                    progressDialog.dismiss();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
 
                         }
 
@@ -186,14 +195,18 @@ public class UserActivity extends AppCompatActivity {
 
                         @Override
                         public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            try {
+                                progressDialog.show();
+                                btRequest.setEnabled(true);
+                                friends_state = "not_friend";
+                                System.out.println("this is not a friend!");
+                                btDecline.setVisibility(View.INVISIBLE);
+                                btRequest.setText("Send Request");
+                                progressDialog.dismiss();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
-                            progressDialog.show();
-                            btRequest.setEnabled(true);
-                            friends_state = "not_friend";
-                            System.out.println("this is not a friend!");
-                            btDecline.setVisibility(View.INVISIBLE);
-                            btRequest.setText("Send Request");
-                            progressDialog.dismiss();
                         }
 
 
@@ -220,14 +233,17 @@ public class UserActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                progressDialog.show();
-                btRequest.setEnabled(true);
-                friends_state = "not_friend";
-                System.out.println("this is not a friend!");
-                btDecline.setVisibility(View.INVISIBLE);
-                btRequest.setText("Send Request");
-                progressDialog.dismiss();
+                try {
+                    progressDialog.show();
+                    btRequest.setEnabled(true);
+                    friends_state = "not_friend";
+                    System.out.println("this is not a friend!");
+                    btDecline.setVisibility(View.INVISIBLE);
+                    btRequest.setText("Send Request");
+                    progressDialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
 
@@ -247,87 +263,102 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                try{
+                    //progressDialog.show();
+                    image = dataSnapshot.child("image").getValue().toString();
+                    status = dataSnapshot.child("status").getValue().toString();
+                    gender = dataSnapshot.child("gender").getValue().toString();
 
-                //progressDialog.show();
-                image = dataSnapshot.child("image").getValue().toString();
-                status = dataSnapshot.child("status").getValue().toString();
-                gender = dataSnapshot.child("gender").getValue().toString();
+                    tvDisplay.setText(name);
+                    tvStatus.setText(status);
+                    if (gender.equalsIgnoreCase("male"))
+                        holderResource = R.drawable.male_user;
+                    else if (gender.equalsIgnoreCase("female"))
+                        holderResource = R.drawable.female_user;
 
-                tvDisplay.setText(name);
-                tvStatus.setText(status);
-                //Picasso.with(this).load(image).placeholder(R.drawable.male_avatar).into(imageView);
-                if (gender.equalsIgnoreCase("male"))
-                    holderResource = R.drawable.male_user;
-                else if (gender.equalsIgnoreCase("female"))
-                    holderResource = R.drawable.female_user;
+                    Picasso.with(UserActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(holderResource).into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
 
-                Picasso.with(UserActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE)
-                        .placeholder(holderResource).into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
+                        }
 
-                    }
+                        @Override
+                        public void onError() {
 
-                    @Override
-                    public void onError() {
+                            if (gender.equalsIgnoreCase("male"))
+                                Picasso.with(UserActivity.this).load(image).placeholder(holderResource).into(imageView);
+                            else if (gender == "female")
+                                Picasso.with(UserActivity.this).load(image).placeholder(holderResource).into(imageView);
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
-                        if (gender.equalsIgnoreCase("male"))
-                            Picasso.with(UserActivity.this).load(image).placeholder(holderResource).into(imageView);
-                        else if (gender == "female")
-                            Picasso.with(UserActivity.this).load(image).placeholder(holderResource).into(imageView);
-                    }
-                });
-                System.out.println("status == " + status);
-                System.out.println("image == " + image);
+
                 requestDatabaseRef.child(currentUser.getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        try {
+                            if (dataSnapshot.hasChild(name)) {
+                                progressDialog.show();
+                                String req_type = dataSnapshot.child(name).child("request_type").getValue().toString();
 
-                        if (dataSnapshot.hasChild(name)) {
-                            progressDialog.show();
-                            String req_type = dataSnapshot.child(name).child("request_type").getValue().toString();
+                                if (req_type.equals("recieved")) {
 
-                            if (req_type.equals("recieved")) {
+                                    System.out.println("you have recieved a friend request !");
+                                    friends_state = "req_recieved";
+                                    btRequest.setText("ACCEPT REQUEST");
+                                    btDecline.setVisibility(View.VISIBLE);
+                                    progressDialog.dismiss();
+                                } else if (req_type.equals("sent")) {
+                                    System.out.println("you have sent a friend request !");
+                                    friends_state = "req_sent";
+                                    btRequest.setText("Cancel REQUEST");
+                                    progressDialog.dismiss();
+                                }
 
-                                System.out.println("you have recieved a friend request !");
-                                friends_state = "req_recieved";
-                                btRequest.setText("ACCEPT REQUEST");
-                                btDecline.setVisibility(View.VISIBLE);
-                                progressDialog.dismiss();
-                            } else if (req_type.equals("sent")) {
-                                System.out.println("you have sent a friend request !");
-                                friends_state = "req_sent";
-                                btRequest.setText("Cancel REQUEST");
-                                progressDialog.dismiss();
+
+                            } else {
+
+                                friendsDatabaseRef.child(currentUser.getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        try{
+                                            progressDialog.show();
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            if (dataSnapshot.hasChild(name)) {
+
+                                                btRequest.setEnabled(true);
+                                                friends_state = "friends";
+                                                System.out.println("this is a friend!");
+                                                btDecline.setVisibility(View.INVISIBLE);
+                                                btRequest.setText("Unfriend " + name);
+                                                progressDialog.dismiss();
+                                            } else
+                                                progressDialog.dismiss();
+
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
                             }
 
-
-                        } else {
-
-                            friendsDatabaseRef.child(currentUser.getDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    progressDialog.show();
-                                    if (dataSnapshot.hasChild(name)) {
-
-                                        btRequest.setEnabled(true);
-                                        friends_state = "friends";
-                                        System.out.println("this is a friend!");
-                                        btDecline.setVisibility(View.INVISIBLE);
-                                        btRequest.setText("Unfriend " + name);
-                                        progressDialog.dismiss();
-                                    } else
-                                        progressDialog.dismiss();
-
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
+                        }catch(Exception e){
+                            e.printStackTrace();
                         }
 
                     }

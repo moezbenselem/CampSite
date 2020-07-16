@@ -351,15 +351,10 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        System.out.println("signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            System.out.println("signInWithEmail:failed" + task.getException());
                             progressDialog.hide();
-                            Toast.makeText(LoginActivity.this, "Connexion Echouée !",
+                            Toast.makeText(LoginActivity.this, "Connexion Failed !",
                                     Toast.LENGTH_LONG).show();
                         } else {
 
@@ -370,8 +365,6 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
 
                                     progressDialog.dismiss();
-
-
                                     Intent toMain = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(toMain);
                                     finish();
@@ -398,14 +391,10 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
 
-                    System.out.println("Upload success !");
-
                     filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(final Uri uri) {
-                            // Got the download URL for 'users/me/profile.png'
 
-                            System.out.println("Uri == " + uri);
                             Map updateHashMap = new HashMap();
                             updateHashMap.put("image", uri.toString());
                             updateHashMap.put("thumb_image", uri.toString());
@@ -417,7 +406,7 @@ public class LoginActivity extends AppCompatActivity {
                                         task.getException().printStackTrace();
 
                                     } else {
-                                        System.out.println("Update success !");
+
                                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                                 .setDisplayName(nom)
                                                 .setPhotoUri(uri)

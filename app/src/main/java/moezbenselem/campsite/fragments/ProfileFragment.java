@@ -60,7 +60,6 @@ public class ProfileFragment extends Fragment {
     StorageReference mStorageRef;
     ProgressDialog progressDialog;
     DatabaseReference mDatabase;
-    SharedPreferences sharedPreferences;
     String username;
     StorageReference filePath;
     private FirebaseAuth mAuth;
@@ -71,25 +70,17 @@ public class ProfileFragment extends Fragment {
 
         try {
 
-
             mAuth = FirebaseAuth.getInstance();
             username = mAuth.getCurrentUser().getDisplayName();
             mStorageRef = FirebaseStorage.getInstance().getReference();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(username);
             mDatabase.keepSynced(true);
 
-            System.out.println("Display name = " + mAuth.getCurrentUser().getDisplayName());
-            System.out.println("photo url = " + mAuth.getCurrentUser().getPhotoUrl());
-
-
             tvDisplay = getView().findViewById(R.id.display_name);
-
 
             tvStatus = getView().findViewById(R.id.description);
 
-
             imageView = getView().findViewById(R.id.circleImageView);
-
 
             btStaus = getView().findViewById(R.id.btStatus);
             btStaus.setOnClickListener(new View.OnClickListener() {
@@ -108,12 +99,6 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                /*Intent galleryIntent = new Intent();
-                galleryIntent.setType("image/*");
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(galleryIntent,"Select Image"),REQUEST_RESULT);
-                */
-
                     CropImage.activity()
                             .setGuidelines(CropImageView.Guidelines.ON)
                             .setAspectRatio(1, 1)
@@ -126,43 +111,47 @@ public class ProfileFragment extends Fragment {
             mDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    tvStatus.setText(dataSnapshot.child("status").getValue().toString());
-                    tvDisplay.setText(mAuth.getCurrentUser().getDisplayName());
-                    final String image = dataSnapshot.child("thumb_image").getValue().toString();
-                    final String gender = dataSnapshot.child("gender").getValue().toString();
-                    System.out.println("gender ==== " + gender);
-                    if (gender.equalsIgnoreCase("male"))
-                        holderResource = R.drawable.male_user;
-                    else if (gender.equalsIgnoreCase("female"))
-                        holderResource = R.drawable.female_user;
-                    if (image.equalsIgnoreCase("default") == false)
-                    //Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.male_avatar).into(imageView);
-                    {
-
-
-                        Picasso.with(getContext()).load(image).networkPolicy(NetworkPolicy.OFFLINE)
-                                .placeholder(holderResource).into(imageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
-
-                            }
-
-                            @Override
-                            public void onError() {
-
-                                if (gender.equalsIgnoreCase("male"))
-                                    Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
-                                else if (gender == "female")
-                                    Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
-                            }
-                        });
-                    } else {
+                    try {
+                        tvStatus.setText(dataSnapshot.child("status").getValue().toString());
+                        tvDisplay.setText(mAuth.getCurrentUser().getDisplayName());
+                        final String image = dataSnapshot.child("thumb_image").getValue().toString();
+                        final String gender = dataSnapshot.child("gender").getValue().toString();
+                        System.out.println("gender ==== " + gender);
                         if (gender.equalsIgnoreCase("male"))
-                            Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
-                        else if (gender == "female")
-                            Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
+                            holderResource = R.drawable.male_user;
+                        else if (gender.equalsIgnoreCase("female"))
+                            holderResource = R.drawable.female_user;
+                        if (image.equalsIgnoreCase("default") == false)
+                        //Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.male_avatar).into(imageView);
+                        {
+
+
+                            Picasso.with(getContext()).load(image).networkPolicy(NetworkPolicy.OFFLINE)
+                                    .placeholder(holderResource).into(imageView, new Callback() {
+                                @Override
+                                public void onSuccess() {
+
+                                }
+
+                                @Override
+                                public void onError() {
+
+                                    if (gender.equalsIgnoreCase("male"))
+                                        Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
+                                    else if (gender == "female")
+                                        Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
+                                }
+                            });
+                        } else {
+                            if (gender.equalsIgnoreCase("male"))
+                                Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
+                            else if (gender == "female")
+                                Picasso.with(getContext()).load(image).placeholder(holderResource).into(imageView);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
                 }
 
                 @Override
@@ -208,7 +197,6 @@ public class ProfileFragment extends Fragment {
                     filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(final Uri uri) {
-                            // Got the download URL for 'users/me/profile.png'
 
                             System.out.println("Uri == " + uri);
                             Map updateHashMap = new HashMap();
@@ -233,7 +221,7 @@ public class ProfileFragment extends Fragment {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
 
-                                                progressDialog.dismiss();
+                                                //progressDialog.dismiss();
 
 
                                             }
