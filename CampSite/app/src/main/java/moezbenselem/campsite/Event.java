@@ -1,4 +1,4 @@
-package moezbenselem.campsite.entities;
+package moezbenselem.campsite;
 
 /**
  * Created by Moez on 30/01/2019.
@@ -6,7 +6,7 @@ package moezbenselem.campsite.entities;
 
 public class Event {
 
-    String location,date,topic,name,time,admin;
+    String location, date, topic, name, time, admin;
 
     public Event() {
     }

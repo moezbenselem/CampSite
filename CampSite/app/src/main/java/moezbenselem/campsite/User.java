@@ -1,4 +1,4 @@
-package moezbenselem.campsite.entities;
+package moezbenselem.campsite;
 
 /**
  * Created by Moez on 30/01/2019.
@@ -6,11 +6,10 @@ package moezbenselem.campsite.entities;
 
 public class User {
 
-    String device_token,email,gender,image,status,thumb_image,username;
+    String device_token, email, gender, image, status, thumb_image, username;
 
     public User() {
     }
-
 
 
     public User(String device_token, String email, String gender, String image, String status, String thumb_image, String username) {

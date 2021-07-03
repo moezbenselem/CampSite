@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "364396360051",
+    "firebase_url": "https://campsite-90984.firebaseio.com",
+    "project_id": "campsite-90984",
+    "storage_bucket": "campsite-90984.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364396360051:android:e7e4a5b23bc1b831",
+        "android_client_info": {
+          "package_name": "moezbenselem.campsite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364396360051-slbe7b41rqqsor5klfogper62pov9mlr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "moezbenselem.campsite",
+            "certificate_hash": "3a0e76228ec24838696e2b26d8711bb555484231"
+          }
+        },
+        {
+          "client_id": "364396360051-1irtq5aroliheilhhtr4he5tr6g3og55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZcTW4tv1io2XFTcpMSQ-APK32UvSYlJw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "364396360051-1irtq5aroliheilhhtr4he5tr6g3og55.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

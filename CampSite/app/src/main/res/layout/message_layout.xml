@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/message_user_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/male_user" />
+
+            <ImageView
+                android:id="@+id/message_image"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="5"
+                android:scaleType="centerInside"
+                android:tag="default"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/message_message_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/message_background"
+                android:padding="10dp"
+                android:tag="default"
+                android:text="TextView"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/message_time"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="65dp"
+            android:text="TextView"
+            android:textAlignment="textStart"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>
